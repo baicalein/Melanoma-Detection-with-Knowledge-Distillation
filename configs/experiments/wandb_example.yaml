@@ -1,0 +1,64 @@
+# Weights & Biases Configuration
+# This file demonstrates how to configure W&B for experiment tracking
+
+# Project settings
+project: deep-learning-final-project
+entity: your-wandb-username  # Your W&B username or team name
+
+# Experiment metadata
+experiment:
+  name: baseline_experiment
+  tags:
+    - baseline
+    - cnn
+    - academic-research
+  notes: "Initial baseline experiment with CNN architecture"
+  group: baseline-models  # Group related experiments together
+
+# W&B logging settings
+logging:
+  # Log frequency
+  log_every_n_steps: 10
+  
+  # What to log
+  log_model: true  # Save model checkpoints to W&B
+  log_gradients: false  # Log gradient histograms (can be expensive)
+  log_graph: true  # Log model architecture graph
+  
+  # Artifact tracking
+  save_artifacts:
+    - checkpoints/*.ckpt
+    - configs/*.yaml
+    - results/metrics/*.json
+
+# Model configuration (also logged to W&B)
+model:
+  name: SimpleCNN
+  num_classes: 10
+  dropout_rate: 0.5
+
+# Training configuration
+training:
+  learning_rate: 0.001
+  batch_size: 32
+  num_epochs: 100
+  optimizer: adam
+  
+# Hardware configuration
+hardware:
+  accelerator: auto  # Lightning auto-selects GPU/TPU/CPU
+  devices: 1
+  precision: 16-mixed  # Mixed precision training
+
+# Callbacks
+callbacks:
+  early_stopping:
+    monitor: val_loss
+    patience: 10
+    mode: min
+  
+  model_checkpoint:
+    monitor: val_acc
+    mode: max
+    save_top_k: 3
+    filename: "{epoch}-{val_acc:.2f}"
