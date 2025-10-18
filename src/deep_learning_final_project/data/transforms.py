@@ -5,13 +5,13 @@ This module provides common data transformations for deep learning projects,
 including normalization, augmentation, and preprocessing pipelines.
 """
 
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import torch
 import torchvision.transforms as T
 
 
-def get_train_transforms(image_size: Tuple[int, int] = (224, 224)) -> T.Compose:
+def get_train_transforms(image_size: tuple[int, int] = (224, 224)) -> T.Compose:
     """
     Get training data augmentation pipeline.
 
@@ -35,7 +35,7 @@ def get_train_transforms(image_size: Tuple[int, int] = (224, 224)) -> T.Compose:
     ])
 
 
-def get_val_transforms(image_size: Tuple[int, int] = (224, 224)) -> T.Compose:
+def get_val_transforms(image_size: tuple[int, int] = (224, 224)) -> T.Compose:
     """
     Get validation/test data transformation pipeline.
 
@@ -58,8 +58,8 @@ def get_val_transforms(image_size: Tuple[int, int] = (224, 224)) -> T.Compose:
 
 def normalize_tensor(
     tensor: torch.Tensor,
-    mean: List[float],
-    std: List[float]
+    mean: list[float],
+    std: list[float]
 ) -> torch.Tensor:
     """
     Normalize a tensor with given mean and standard deviation.
@@ -79,8 +79,8 @@ def normalize_tensor(
 
 def denormalize_tensor(
     tensor: torch.Tensor,
-    mean: List[float],
-    std: List[float]
+    mean: list[float],
+    std: list[float]
 ) -> torch.Tensor:
     """
     Denormalize a tensor (reverse normalization).

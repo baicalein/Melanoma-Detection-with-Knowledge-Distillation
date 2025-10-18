@@ -5,8 +5,9 @@ This module contains custom PyTorch Dataset classes for loading and preprocessin
 Extend these classes for your specific data needs.
 """
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional, Tuple
+from typing import Any
 
 import torch
 from torch.utils.data import Dataset
@@ -32,8 +33,8 @@ class BaseDataset(Dataset):
     def __init__(
         self,
         data_dir: str | Path,
-        transform: Optional[Callable] = None,
-        target_transform: Optional[Callable] = None,
+        transform: Callable | None = None,
+        target_transform: Callable | None = None,
     ) -> None:
         self.data_dir = Path(data_dir)
         self.transform = transform
@@ -47,7 +48,7 @@ class BaseDataset(Dataset):
         """Return the number of samples in the dataset."""
         return len(self.data)
 
-    def __getitem__(self, idx: int) -> Tuple[Any, Any]:
+    def __getitem__(self, idx: int) -> tuple[Any, Any]:
         """
         Get a sample and its target from the dataset.
 
@@ -84,8 +85,8 @@ class ImageDataset(BaseDataset):
     def __init__(
         self,
         data_dir: str | Path,
-        transform: Optional[Callable] = None,
-        target_transform: Optional[Callable] = None,
+        transform: Callable | None = None,
+        target_transform: Callable | None = None,
     ) -> None:
         super().__init__(data_dir, transform, target_transform)
 
@@ -94,7 +95,7 @@ class ImageDataset(BaseDataset):
         self.image_paths = []
         self.labels = []
 
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, int]:
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, int]:
         """Load and return an image and its label."""
         # TODO: Implement image loading
         # Example:

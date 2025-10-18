@@ -6,7 +6,6 @@ research, including training curves, confusion matrices, and sample visualizatio
 """
 
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,11 +15,11 @@ from matplotlib.figure import Figure
 
 
 def plot_training_curves(
-    train_losses: List[float],
-    val_losses: List[float],
+    train_losses: list[float],
+    val_losses: list[float],
     metric_name: str = "Loss",
-    save_path: Optional[str] = None,
-    figsize: Tuple[int, int] = (10, 6),
+    save_path: str | None = None,
+    figsize: tuple[int, int] = (10, 6),
 ) -> Figure:
     """
     Plot training and validation curves.
@@ -64,10 +63,10 @@ def plot_training_curves(
 
 def plot_confusion_matrix(
     confusion_matrix: np.ndarray,
-    class_names: Optional[List[str]] = None,
+    class_names: list[str] | None = None,
     normalize: bool = False,
-    save_path: Optional[str] = None,
-    figsize: Tuple[int, int] = (10, 8),
+    save_path: str | None = None,
+    figsize: tuple[int, int] = (10, 8),
 ) -> Figure:
     """
     Plot confusion matrix as a heatmap.
@@ -87,7 +86,8 @@ def plot_confusion_matrix(
         >>> fig = plot_confusion_matrix(cm, class_names=['Class A', 'Class B'])
     """
     if normalize:
-        confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
+        cm_sum = confusion_matrix.sum(axis=1)[:, np.newaxis]
+        confusion_matrix = confusion_matrix.astype("float") / cm_sum
 
     fig, ax = plt.subplots(figsize=figsize)
 
@@ -117,12 +117,12 @@ def plot_confusion_matrix(
 
 def plot_sample_predictions(
     images: torch.Tensor,
-    true_labels: List[int],
-    pred_labels: List[int],
-    class_names: Optional[List[str]] = None,
+    true_labels: list[int],
+    pred_labels: list[int],
+    class_names: list[str] | None = None,
     num_samples: int = 16,
-    save_path: Optional[str] = None,
-    figsize: Tuple[int, int] = (12, 12),
+    save_path: str | None = None,
+    figsize: tuple[int, int] = (12, 12),
 ) -> Figure:
     """
     Plot sample images with true and predicted labels.
@@ -182,9 +182,9 @@ def plot_sample_predictions(
 
 
 def plot_learning_rate_schedule(
-    learning_rates: List[float],
-    save_path: Optional[str] = None,
-    figsize: Tuple[int, int] = (10, 6),
+    learning_rates: list[float],
+    save_path: str | None = None,
+    figsize: tuple[int, int] = (10, 6),
 ) -> Figure:
     """
     Plot learning rate schedule over training.

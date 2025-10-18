@@ -7,12 +7,12 @@ ensuring reproducibility across research runs.
 
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import yaml
 
 
-def load_config(config_path: str | Path) -> Dict[str, Any]:
+def load_config(config_path: str | Path) -> dict[str, Any]:
     """
     Load configuration from a YAML file.
 
@@ -35,13 +35,13 @@ def load_config(config_path: str | Path) -> Dict[str, Any]:
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
-    with open(config_path, "r") as f:
+    with open(config_path) as f:
         config = yaml.safe_load(f)
 
     return config
 
 
-def save_config(config: Dict[str, Any], output_path: str | Path) -> None:
+def save_config(config: dict[str, Any], output_path: str | Path) -> None:
     """
     Save configuration to a YAML file.
 
@@ -60,7 +60,7 @@ def save_config(config: Dict[str, Any], output_path: str | Path) -> None:
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
 
 
-def merge_configs(base_config: Dict[str, Any], override_config: Dict[str, Any]) -> Dict[str, Any]:
+def merge_configs(base_config: dict[str, Any], override_config: dict[str, Any]) -> dict[str, Any]:
     """
     Merge two configuration dictionaries, with override_config taking precedence.
 
@@ -88,7 +88,7 @@ def merge_configs(base_config: Dict[str, Any], override_config: Dict[str, Any]) 
     return merged
 
 
-def get_config_from_env(prefix: str = "DL_") -> Dict[str, str]:
+def get_config_from_env(prefix: str = "DL_") -> dict[str, str]:
     """
     Extract configuration from environment variables with a given prefix.
 
@@ -124,7 +124,7 @@ class Config:
         >>> print(config.model.hidden_size)  # 256
     """
 
-    def __init__(self, config_dict: Dict[str, Any]) -> None:
+    def __init__(self, config_dict: dict[str, Any]) -> None:
         """Initialize Config from dictionary."""
         for key, value in config_dict.items():
             if isinstance(value, dict):
@@ -132,7 +132,7 @@ class Config:
             else:
                 setattr(self, key, value)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert Config back to dictionary."""
         result = {}
         for key, value in self.__dict__.items():

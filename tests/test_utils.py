@@ -2,7 +2,6 @@
 Tests for utility functions.
 """
 
-import pytest
 import torch
 
 from deep_learning_final_project.utils.metrics import (

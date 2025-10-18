@@ -10,7 +10,6 @@ Usage:
 
 import argparse
 import logging
-from pathlib import Path
 
 import torch
 import torch.nn as nn
@@ -20,13 +19,14 @@ from torch.utils.data import DataLoader
 # from deep_learning_final_project.data.dataset import BaseDataset
 # from deep_learning_final_project.models.example_model import SimpleCNN
 from deep_learning_final_project.utils.config import Config
-from deep_learning_final_project.utils.metrics import MetricTracker
 from deep_learning_final_project.utils.training import (
     AverageMeter,
-    EarlyStopping,
     get_device,
     set_seed,
 )
+
+# Uncomment when implementing training loop:
+# from deep_learning_final_project.utils.metrics import MetricTracker
 
 # Set up logging
 logging.basicConfig(
@@ -60,7 +60,6 @@ def train_one_epoch(
     """
     model.train()
     loss_meter = AverageMeter()
-    metric_tracker = MetricTracker()
 
     for batch_idx, (data, target) in enumerate(dataloader):
         data, target = data.to(device), target.to(device)

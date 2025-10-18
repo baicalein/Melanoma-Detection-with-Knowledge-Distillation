@@ -66,13 +66,8 @@ requires = ["uv_build>=0.9.3,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.ruff]
-# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default
-select = ["E", "F", "I", "N", "W", "UP"]
-ignore = []
-# Allow autofix for all enabled rules
-fixable = ["ALL"]
-unfixable = []
-# Exclude common paths
+line-length = 100
+target-version = "py312"
 exclude = [
     ".git",
     ".ruff_cache",
@@ -81,9 +76,14 @@ exclude = [
     "build",
     "dist",
 ]
-line-length = 100
-# Assume Python 3.12
-target-version = "py312"
+
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default
+select = ["E", "F", "I", "W", "UP"]
+ignore = ["N812"]  # Allow single-letter imports like T for transforms, F for functional
+# Allow autofix for all enabled rules
+fixable = ["ALL"]
+unfixable = []
 
 [tool.ruff.format]
 quote-style = "double"

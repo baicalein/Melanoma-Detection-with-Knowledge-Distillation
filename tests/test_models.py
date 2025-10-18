@@ -2,7 +2,6 @@
 Tests for model architectures.
 """
 
-import pytest
 import torch
 
 from deep_learning_final_project.models.base_model import BaseModel

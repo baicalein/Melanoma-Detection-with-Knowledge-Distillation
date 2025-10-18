@@ -6,7 +6,7 @@ functionality like saving, loading, and parameter counting.
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import torch
 import torch.nn as nn
@@ -69,8 +69,8 @@ class BaseModel(nn.Module):
         self,
         path: str | Path,
         epoch: int,
-        optimizer_state: Optional[Dict[str, Any]] = None,
-        metrics: Optional[Dict[str, float]] = None,
+        optimizer_state: dict[str, Any] | None = None,
+        metrics: dict[str, float] | None = None,
     ) -> None:
         """
         Save model checkpoint.
@@ -108,7 +108,7 @@ class BaseModel(nn.Module):
         self,
         path: str | Path,
         device: str = "cpu",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Load model checkpoint.
 
@@ -151,7 +151,7 @@ class BaseModel(nn.Module):
 
         return "\n".join(summary)
 
-    def freeze_layers(self, layer_names: Optional[list[str]] = None) -> None:
+    def freeze_layers(self, layer_names: list[str] | None = None) -> None:
         """
         Freeze specified layers or all layers if none specified.
 
@@ -169,7 +169,7 @@ class BaseModel(nn.Module):
                 if any(layer_name in name for layer_name in layer_names):
                     param.requires_grad = False
 
-    def unfreeze_layers(self, layer_names: Optional[list[str]] = None) -> None:
+    def unfreeze_layers(self, layer_names: list[str] | None = None) -> None:
         """
         Unfreeze specified layers or all layers if none specified.
 

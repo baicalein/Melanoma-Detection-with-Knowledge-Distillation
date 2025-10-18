@@ -6,7 +6,7 @@ including learning rate schedulers, metric tracking, and early stopping.
 """
 
 import random
-from typing import Any, Dict, Optional
+from typing import Any
 
 import numpy as np
 import torch
@@ -134,7 +134,7 @@ class EarlyStopping:
         self.mode = mode
         self.min_delta = min_delta
         self.counter = 0
-        self.best_score: Optional[float] = None
+        self.best_score: float | None = None
         self.early_stop = False
 
         if mode == "min":
@@ -169,7 +169,7 @@ class EarlyStopping:
 
 
 def save_checkpoint(
-    state: Dict[str, Any],
+    state: dict[str, Any],
     filepath: str,
     is_best: bool = False,
 ) -> None:
@@ -196,7 +196,9 @@ def save_checkpoint(
         torch.save(state, best_path)
 
 
-def load_checkpoint(filepath: str, model: nn.Module, optimizer: Optional[Any] = None) -> Dict[str, Any]:
+def load_checkpoint(
+    filepath: str, model: nn.Module, optimizer: Any | None = None
+) -> dict[str, Any]:
     """
     Load model checkpoint.
 

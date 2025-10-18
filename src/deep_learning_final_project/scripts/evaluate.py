@@ -9,7 +9,6 @@ Usage:
 
 import argparse
 import logging
-from pathlib import Path
 
 import torch
 import torch.nn as nn

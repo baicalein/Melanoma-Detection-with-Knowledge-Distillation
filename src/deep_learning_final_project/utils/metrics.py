@@ -5,7 +5,6 @@ This module provides common metrics for evaluating deep learning models,
 including classification and regression metrics.
 """
 
-from typing import List, Tuple
 
 import numpy as np
 import torch
@@ -127,7 +126,7 @@ def compute_per_class_accuracy(
     predictions: np.ndarray,
     targets: np.ndarray,
     num_classes: int
-) -> List[float]:
+) -> list[float]:
     """
     Compute accuracy for each class separately.
 
