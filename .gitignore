@@ -144,6 +144,29 @@ ENV/
 env.bak/
 venv.bak/
 
+# Project-specific
+# Large data files (keep directory structure but not large files)
+data/raw/*.zip
+data/raw/*.tar.gz
+data/raw/*.csv
+data/raw/*.json
+data/processed/*.csv
+data/processed/*.pkl
+data/processed/*.h5
+
+# Model checkpoints and logs (can be large)
+checkpoints/*.pth
+checkpoints/*.pt
+checkpoints/*.ckpt
+logs/tensorboard/*
+logs/*.log
+
+# Results (commit summaries but not all intermediate files)
+results/**/*.png
+results/**/*.jpg
+results/**/*.pdf
+!results/**/README.md
+
 # Spyder project settings
 .spyderproject
 .spyproject

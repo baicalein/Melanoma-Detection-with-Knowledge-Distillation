@@ -1,0 +1,84 @@
+# Baseline Experiment Configuration
+# This is a template configuration file for a baseline experiment.
+# Customize according to your research needs.
+
+experiment:
+  name: baseline_experiment
+  description: "Initial baseline model for comparison"
+  tags: [baseline, initial]
+
+# Random seed for reproducibility
+seed: 42
+
+# Data configuration
+data:
+  data_dir: ./data/processed
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+  batch_size: 32
+  num_workers: 4
+  shuffle_train: true
+
+# Model configuration
+model:
+  name: SimpleCNN
+  num_classes: 10
+  in_channels: 3
+  dropout_rate: 0.5
+  pretrained: false
+
+# Training configuration
+training:
+  num_epochs: 100
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+
+  # Optimizer settings
+  optimizer:
+    type: adam
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  # Learning rate scheduler
+  scheduler:
+    type: step
+    step_size: 30
+    gamma: 0.1
+
+  # Early stopping
+  early_stopping:
+    patience: 10
+    min_delta: 0.001
+
+# Loss function
+loss:
+  type: cross_entropy
+  label_smoothing: 0.0
+
+# Evaluation metrics
+metrics:
+  - accuracy
+  - precision
+  - recall
+  - f1_score
+
+# Logging and saving
+logging:
+  log_interval: 10
+  tensorboard_dir: ./logs/tensorboard
+  log_dir: ./logs
+
+checkpointing:
+  checkpoint_dir: ./checkpoints
+  save_freq: 5  # Save every N epochs
+  save_best: true
+  monitor_metric: val_loss
+  monitor_mode: min
+
+# Hardware configuration
+hardware:
+  device: cuda  # cuda, cpu, or mps
+  mixed_precision: false
+  multi_gpu: false
