@@ -161,6 +161,10 @@ checkpoints/*.ckpt
 logs/tensorboard/*
 logs/*.log
 
+# Weights & Biases
+.wandb/
+wandb/
+
 # Results (commit summaries but not all intermediate files)
 results/**/*.png
 results/**/*.jpg

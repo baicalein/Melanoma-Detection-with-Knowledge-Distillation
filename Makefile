@@ -38,8 +38,7 @@ lint:
 	mypy src/ --ignore-missing-imports
 
 format:
-	black src/ tests/
-	isort src/ tests/
+	ruff format src/ tests/
 	ruff check --fix src/ tests/
 
 # Pre-commit

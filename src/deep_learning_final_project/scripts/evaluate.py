@@ -70,24 +70,11 @@ def evaluate_model(
 def main() -> None:
     """Main evaluation function."""
     parser = argparse.ArgumentParser(description="Evaluate a trained model")
+    parser.add_argument("--checkpoint", type=str, required=True, help="Path to model checkpoint")
     parser.add_argument(
-        "--checkpoint",
-        type=str,
-        required=True,
-        help="Path to model checkpoint"
+        "--data-dir", type=str, default="data/processed", help="Path to test data directory"
     )
-    parser.add_argument(
-        "--data-dir",
-        type=str,
-        default="data/processed",
-        help="Path to test data directory"
-    )
-    parser.add_argument(
-        "--batch-size",
-        type=int,
-        default=32,
-        help="Batch size for evaluation"
-    )
+    parser.add_argument("--batch-size", type=int, default=32, help="Batch size for evaluation")
     args = parser.parse_args()
 
     # Setup device

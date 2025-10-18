@@ -106,7 +106,7 @@ def get_config_from_env(prefix: str = "DL_") -> dict[str, str]:
     config = {}
     for key, value in os.environ.items():
         if key.startswith(prefix):
-            config_key = key[len(prefix):]
+            config_key = key[len(prefix) :]
             config[config_key] = value
     return config
 

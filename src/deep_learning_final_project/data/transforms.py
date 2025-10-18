@@ -25,14 +25,16 @@ def get_train_transforms(image_size: tuple[int, int] = (224, 224)) -> T.Compose:
         >>> transform = get_train_transforms((256, 256))
         >>> augmented_image = transform(image)
     """
-    return T.Compose([
-        T.Resize(image_size),
-        T.RandomHorizontalFlip(p=0.5),
-        T.RandomRotation(degrees=15),
-        T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
-        T.ToTensor(),
-        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
+    return T.Compose(
+        [
+            T.Resize(image_size),
+            T.RandomHorizontalFlip(p=0.5),
+            T.RandomRotation(degrees=15),
+            T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+            T.ToTensor(),
+            T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
 
 
 def get_val_transforms(image_size: tuple[int, int] = (224, 224)) -> T.Compose:
@@ -49,18 +51,16 @@ def get_val_transforms(image_size: tuple[int, int] = (224, 224)) -> T.Compose:
         >>> transform = get_val_transforms((256, 256))
         >>> processed_image = transform(image)
     """
-    return T.Compose([
-        T.Resize(image_size),
-        T.ToTensor(),
-        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
+    return T.Compose(
+        [
+            T.Resize(image_size),
+            T.ToTensor(),
+            T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
 
 
-def normalize_tensor(
-    tensor: torch.Tensor,
-    mean: list[float],
-    std: list[float]
-) -> torch.Tensor:
+def normalize_tensor(tensor: torch.Tensor, mean: list[float], std: list[float]) -> torch.Tensor:
     """
     Normalize a tensor with given mean and standard deviation.
 
@@ -77,11 +77,7 @@ def normalize_tensor(
     return (tensor - mean) / std
 
 
-def denormalize_tensor(
-    tensor: torch.Tensor,
-    mean: list[float],
-    std: list[float]
-) -> torch.Tensor:
+def denormalize_tensor(tensor: torch.Tensor, mean: list[float], std: list[float]) -> torch.Tensor:
     """
     Denormalize a tensor (reverse normalization).
 

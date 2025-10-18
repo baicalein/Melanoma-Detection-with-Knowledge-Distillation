@@ -43,12 +43,12 @@ def plot_training_curves(
     fig, ax = plt.subplots(figsize=figsize)
 
     epochs = range(1, len(train_losses) + 1)
-    ax.plot(epochs, train_losses, 'b-', label=f'Train {metric_name}', linewidth=2)
-    ax.plot(epochs, val_losses, 'r-', label=f'Val {metric_name}', linewidth=2)
+    ax.plot(epochs, train_losses, "b-", label=f"Train {metric_name}", linewidth=2)
+    ax.plot(epochs, val_losses, "r-", label=f"Val {metric_name}", linewidth=2)
 
-    ax.set_xlabel('Epoch', fontsize=12)
+    ax.set_xlabel("Epoch", fontsize=12)
     ax.set_ylabel(metric_name, fontsize=12)
-    ax.set_title(f'Training and Validation {metric_name}', fontsize=14)
+    ax.set_title(f"Training and Validation {metric_name}", fontsize=14)
     ax.legend(fontsize=10)
     ax.grid(True, alpha=0.3)
 
@@ -56,7 +56,7 @@ def plot_training_curves(
 
     if save_path:
         Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
     return fig
 
@@ -94,23 +94,23 @@ def plot_confusion_matrix(
     sns.heatmap(
         confusion_matrix,
         annot=True,
-        fmt='.2f' if normalize else 'd',
-        cmap='Blues',
+        fmt=".2f" if normalize else "d",
+        cmap="Blues",
         xticklabels=class_names,
         yticklabels=class_names,
         ax=ax,
-        cbar_kws={'label': 'Count' if not normalize else 'Proportion'}
+        cbar_kws={"label": "Count" if not normalize else "Proportion"},
     )
 
-    ax.set_xlabel('Predicted Label', fontsize=12)
-    ax.set_ylabel('True Label', fontsize=12)
-    ax.set_title('Confusion Matrix', fontsize=14)
+    ax.set_xlabel("Predicted Label", fontsize=12)
+    ax.set_ylabel("True Label", fontsize=12)
+    ax.set_title("Confusion Matrix", fontsize=14)
 
     plt.tight_layout()
 
     if save_path:
         Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
     return fig
 
@@ -159,24 +159,24 @@ def plot_sample_predictions(
         # Denormalize if needed (assuming ImageNet normalization)
         img = (img - img.min()) / (img.max() - img.min())
 
-        ax.imshow(img, cmap='gray' if len(img.shape) == 2 else None)
-        ax.axis('off')
+        ax.imshow(img, cmap="gray" if len(img.shape) == 2 else None)
+        ax.axis("off")
 
         true_name = class_names[true_labels[idx]] if class_names else true_labels[idx]
         pred_name = class_names[pred_labels[idx]] if class_names else pred_labels[idx]
 
-        color = 'green' if true_labels[idx] == pred_labels[idx] else 'red'
-        ax.set_title(f'True: {true_name}\nPred: {pred_name}', fontsize=10, color=color)
+        color = "green" if true_labels[idx] == pred_labels[idx] else "red"
+        ax.set_title(f"True: {true_name}\nPred: {pred_name}", fontsize=10, color=color)
 
     # Hide extra subplots
     for idx in range(num_samples, len(axes)):
-        axes[idx].axis('off')
+        axes[idx].axis("off")
 
     plt.tight_layout()
 
     if save_path:
         Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
     return fig
 
@@ -200,19 +200,19 @@ def plot_learning_rate_schedule(
     fig, ax = plt.subplots(figsize=figsize)
 
     epochs = range(1, len(learning_rates) + 1)
-    ax.plot(epochs, learning_rates, 'b-', linewidth=2)
+    ax.plot(epochs, learning_rates, "b-", linewidth=2)
 
-    ax.set_xlabel('Epoch', fontsize=12)
-    ax.set_ylabel('Learning Rate', fontsize=12)
-    ax.set_title('Learning Rate Schedule', fontsize=14)
-    ax.set_yscale('log')
+    ax.set_xlabel("Epoch", fontsize=12)
+    ax.set_ylabel("Learning Rate", fontsize=12)
+    ax.set_title("Learning Rate Schedule", fontsize=14)
+    ax.set_yscale("log")
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
 
     if save_path:
         Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
     return fig
 
@@ -228,16 +228,18 @@ def setup_publication_style() -> None:
         >>> plt.plot([1, 2, 3], [1, 4, 9])
         >>> plt.show()
     """
-    plt.style.use('seaborn-v0_8-paper')
-    plt.rcParams.update({
-        'font.size': 11,
-        'axes.labelsize': 12,
-        'axes.titlesize': 14,
-        'xtick.labelsize': 10,
-        'ytick.labelsize': 10,
-        'legend.fontsize': 10,
-        'figure.titlesize': 14,
-        'font.family': 'serif',
-        'font.serif': ['Times New Roman'],
-        'text.usetex': False,  # Set to True if you have LaTeX installed
-    })
+    plt.style.use("seaborn-v0_8-paper")
+    plt.rcParams.update(
+        {
+            "font.size": 11,
+            "axes.labelsize": 12,
+            "axes.titlesize": 14,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 10,
+            "legend.fontsize": 10,
+            "figure.titlesize": 14,
+            "font.family": "serif",
+            "font.serif": ["Times New Roman"],
+            "text.usetex": False,  # Set to True if you have LaTeX installed
+        }
+    )

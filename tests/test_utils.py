@@ -102,10 +102,12 @@ class TestMetrics:
 
     def test_compute_accuracy_with_logits(self) -> None:
         """Test accuracy computation with logits."""
-        logits = torch.tensor([
-            [2.0, 0.5, 0.1],  # Predicts class 0
-            [0.1, 2.0, 0.5],  # Predicts class 1
-        ])
+        logits = torch.tensor(
+            [
+                [2.0, 0.5, 0.1],  # Predicts class 0
+                [0.1, 2.0, 0.5],  # Predicts class 1
+            ]
+        )
         targets = torch.tensor([0, 1])
 
         accuracy = compute_accuracy(logits, targets)
@@ -113,10 +115,12 @@ class TestMetrics:
 
     def test_compute_top_k_accuracy(self) -> None:
         """Test top-k accuracy computation."""
-        logits = torch.tensor([
-            [1.0, 2.0, 3.0, 4.0, 5.0],  # Top 1: 4, Top 2: [4, 3]
-            [5.0, 4.0, 3.0, 2.0, 1.0],  # Top 1: 0, Top 2: [0, 1]
-        ])
+        logits = torch.tensor(
+            [
+                [1.0, 2.0, 3.0, 4.0, 5.0],  # Top 1: 4, Top 2: [4, 3]
+                [5.0, 4.0, 3.0, 2.0, 1.0],  # Top 1: 0, Top 2: [0, 1]
+            ]
+        )
         targets = torch.tensor([3, 1])  # True classes
 
         top1_acc = compute_top_k_accuracy(logits, targets, k=1)

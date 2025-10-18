@@ -5,7 +5,6 @@ This module provides common metrics for evaluating deep learning models,
 including classification and regression metrics.
 """
 
-
 import numpy as np
 import torch
 from sklearn.metrics import (
@@ -42,11 +41,7 @@ def compute_accuracy(predictions: torch.Tensor, targets: torch.Tensor) -> float:
     return correct / total
 
 
-def compute_top_k_accuracy(
-    predictions: torch.Tensor,
-    targets: torch.Tensor,
-    k: int = 5
-) -> float:
+def compute_top_k_accuracy(predictions: torch.Tensor, targets: torch.Tensor, k: int = 5) -> float:
     """
     Compute top-k accuracy.
 
@@ -71,9 +66,7 @@ def compute_top_k_accuracy(
 
 
 def compute_classification_metrics(
-    predictions: np.ndarray,
-    targets: np.ndarray,
-    average: str = "macro"
+    predictions: np.ndarray, targets: np.ndarray, average: str = "macro"
 ) -> dict:
     """
     Compute comprehensive classification metrics.
@@ -100,10 +93,7 @@ def compute_classification_metrics(
     }
 
 
-def compute_confusion_matrix(
-    predictions: np.ndarray,
-    targets: np.ndarray
-) -> np.ndarray:
+def compute_confusion_matrix(predictions: np.ndarray, targets: np.ndarray) -> np.ndarray:
     """
     Compute confusion matrix.
 
@@ -123,9 +113,7 @@ def compute_confusion_matrix(
 
 
 def compute_per_class_accuracy(
-    predictions: np.ndarray,
-    targets: np.ndarray,
-    num_classes: int
+    predictions: np.ndarray, targets: np.ndarray, num_classes: int
 ) -> list[float]:
     """
     Compute accuracy for each class separately.
@@ -187,10 +175,7 @@ class MetricTracker:
 
     def get_average(self) -> dict:
         """Get average values for all tracked metrics."""
-        return {
-            key: self.metrics[key] / self.counts[key]
-            for key in self.metrics.keys()
-        }
+        return {key: self.metrics[key] / self.counts[key] for key in self.metrics.keys()}
 
     def reset(self) -> None:
         """Reset all tracked metrics."""

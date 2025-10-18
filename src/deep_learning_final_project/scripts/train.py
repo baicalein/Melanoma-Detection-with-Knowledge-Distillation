@@ -78,8 +78,7 @@ def train_one_epoch(
 
         if batch_idx % 10 == 0:
             logger.info(
-                f"Epoch: {epoch} [{batch_idx}/{len(dataloader)}] "
-                f"Loss: {loss_meter.avg:.4f}"
+                f"Epoch: {epoch} [{batch_idx}/{len(dataloader)}] Loss: {loss_meter.avg:.4f}"
             )
 
     return {"loss": loss_meter.avg}
@@ -121,17 +120,9 @@ def validate(
 def main() -> None:
     """Main training function."""
     parser = argparse.ArgumentParser(description="Train a deep learning model")
+    parser.add_argument("--config", type=str, required=True, help="Path to configuration file")
     parser.add_argument(
-        "--config",
-        type=str,
-        required=True,
-        help="Path to configuration file"
-    )
-    parser.add_argument(
-        "--resume",
-        type=str,
-        default=None,
-        help="Path to checkpoint to resume from"
+        "--resume", type=str, default=None, help="Path to checkpoint to resume from"
     )
     args = parser.parse_args()
 

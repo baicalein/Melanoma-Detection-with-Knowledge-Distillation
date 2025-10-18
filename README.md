@@ -1,6 +1,15 @@
 # Deep Learning Final Project
 
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
+[![Lightning](https://img.shields.io/badge/Lightning-2.0+-792ee5.svg)](https://lightning.ai/)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 A comprehensive, well-structured data science project template for academic research, powered by [uv](https://github.com/astral-sh/uv) for fast and reliable Python package management.
+
+> [!NOTE]
+> This project template uses **PyTorch Lightning** for scalable training and **Weights & Biases** for experiment tracking, following modern deep learning best practices.
 
 ## 🎓 Project Overview
 
@@ -96,13 +105,117 @@ jupyter lab
 # Run tests
 pytest
 
-# Format code
+# Format code with ruff (preferred) or black
+ruff format src/ tests/
+# or
 black src/ tests/
 isort src/ tests/
 
 # Lint code
 ruff check src/ tests/
 ```
+
+## ⚡ PyTorch Lightning & Modern Tools
+
+This project uses **PyTorch Lightning** for training, which provides:
+
+- 🚀 Automatic optimization and training loops
+- 🔧 Built-in support for multi-GPU, TPU, and mixed precision
+- 📊 Easy integration with logging frameworks
+- ✅ Less boilerplate, more research
+
+### PyTorch Lightning Conventions
+
+> [!TIP]
+> Follow these PyTorch Lightning best practices for consistency:
+
+- **LightningModule**: Define your model in a `LightningModule` class
+- **LightningDataModule**: Encapsulate data loading logic
+- **Trainer**: Use the `Trainer` class for training with automatic features
+- **Callbacks**: Leverage built-in callbacks for checkpointing, early stopping, etc.
+
+Example structure:
+```python
+import pytorch_lightning as pl
+from torchmetrics import Accuracy
+
+class MyModel(pl.LightningModule):
+    def __init__(self):
+        super().__init__()
+        self.model = ...
+        self.train_acc = Accuracy(task="multiclass", num_classes=10)
+        
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self.model(x)
+        loss = F.cross_entropy(logits, y)
+        self.train_acc(logits, y)
+        self.log('train_loss', loss)
+        self.log('train_acc', self.train_acc, on_epoch=True)
+        return loss
+    
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=1e-3)
+```
+
+### Weights & Biases Integration
+
+> [!IMPORTANT]
+> This project uses **Weights & Biases (W&B)** for experiment tracking and visualization.
+
+**Setup W&B:**
+```bash
+# Install (already in dependencies)
+pip install wandb
+
+# Login with your API key
+wandb login
+
+# Or set environment variable
+export WANDB_API_KEY=your_api_key_here
+```
+
+**Using W&B with PyTorch Lightning:**
+```python
+from pytorch_lightning.loggers import WandbLogger
+
+# Initialize W&B logger
+wandb_logger = WandbLogger(
+    project="deep-learning-final-project",
+    name="experiment_001",
+    save_dir="logs/"
+)
+
+# Use with Trainer
+trainer = pl.Trainer(
+    logger=wandb_logger,
+    max_epochs=100,
+    accelerator="auto"
+)
+```
+
+**W&B Features:**
+- 📈 Automatic metric logging and visualization
+- 🔍 Hyperparameter tracking
+- 🖼️ Image and media logging
+- 📊 Model comparison across experiments
+- 🤝 Team collaboration and sharing
+- 💾 Artifact tracking for datasets and models
+
+**Example logging:**
+```python
+# In your LightningModule
+self.log('train_loss', loss)  # Automatically logged to W&B
+
+# Log images
+wandb_logger.log_image('predictions', images=[img1, img2])
+
+# Log hyperparameters
+wandb_logger.log_hyperparams({"learning_rate": 1e-3, "batch_size": 32})
+```
+
+> [!WARNING]
+> Remember to add `.wandb/` to your `.gitignore` to avoid committing W&B cache files.
 
 ## 📊 Data Management
 
@@ -135,7 +248,13 @@ ruff check src/ tests/
    python -m deep_learning_final_project.scripts.train --config configs/experiments/experiment_001.yaml
    ```
 
-3. **Monitor with TensorBoard**
+3. **Monitor with Weights & Biases**
+   ```bash
+   # View in browser at wandb.ai
+   wandb online
+   ```
+   
+   Or use TensorBoard as alternative:
    ```bash
    tensorboard --logdir logs/
    ```
@@ -215,12 +334,123 @@ pytest -v
 
 This project uses modern Python development tools:
 - **uv**: Fast package management and virtual environments
-- **ruff**: Fast Python linter (replaces flake8, pylint)
-- **black**: Code formatter
-- **isort**: Import sorter
+- **ruff**: Fast Python linter and formatter (replaces flake8, pylint, black)
 - **pytest**: Testing framework
 - **mypy**: Static type checker
 - **pre-commit**: Git hooks for code quality
+- **PyTorch Lightning**: Simplified training loop and scaling
+- **TorchMetrics**: Metric computation for model evaluation
+- **Weights & Biases**: Experiment tracking and visualization
+
+> [!TIP]
+> Use `ruff format` instead of `black` for faster code formatting. Ruff is a drop-in replacement written in Rust.
+
+## 🐍 PyTorch Coding Conventions
+
+Follow these conventions for consistency across the project:
+
+### General PyTorch Best Practices
+
+1. **Device Management**
+   ```python
+   # Always use device-agnostic code
+   device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+   model = model.to(device)
+   data = data.to(device)
+   ```
+
+2. **Model Organization**
+   ```python
+   # Organize models in nn.Module subclasses
+   class MyModel(nn.Module):
+       def __init__(self):
+           super().__init__()  # Always call parent __init__
+           self.layer1 = nn.Linear(10, 20)
+           
+       def forward(self, x):
+           return self.layer1(x)
+   ```
+
+3. **Training/Eval Modes**
+   ```python
+   # Always set appropriate mode
+   model.train()  # For training (enables dropout, batchnorm updates)
+   model.eval()   # For inference (disables dropout, batchnorm)
+   
+   # Use no_grad for inference
+   with torch.no_grad():
+       predictions = model(data)
+   ```
+
+4. **Gradient Management**
+   ```python
+   # Clear gradients before backward pass
+   optimizer.zero_grad()
+   loss.backward()
+   optimizer.step()
+   ```
+
+5. **Tensor Operations**
+   ```python
+   # Use in-place operations cautiously (can break autograd)
+   x = x + 1      # Safe
+   x += 1         # Potentially unsafe if x requires grad
+   x.add_(1)      # In-place, potentially unsafe
+   ```
+
+### PyTorch Lightning Conventions
+
+1. **Use LightningModule for models**
+   ```python
+   class MyModel(pl.LightningModule):
+       def __init__(self):
+           super().__init__()
+           self.save_hyperparameters()  # Auto-save hparams
+   ```
+
+2. **Leverage automatic optimization**
+   ```python
+   # Lightning handles zero_grad, backward, and step automatically
+   def training_step(self, batch, batch_idx):
+       loss = self.compute_loss(batch)
+       return loss  # That's it!
+   ```
+
+3. **Use TorchMetrics for metrics**
+   ```python
+   from torchmetrics import Accuracy, F1Score
+   
+   self.train_acc = Accuracy(task="multiclass", num_classes=10)
+   self.train_f1 = F1Score(task="multiclass", num_classes=10)
+   ```
+
+4. **Log consistently**
+   ```python
+   # Use self.log() for automatic logging to all loggers
+   self.log("train_loss", loss, on_step=True, on_epoch=True)
+   self.log("val_acc", self.val_acc, on_epoch=True)
+   ```
+
+### Naming Conventions
+
+- **Variables**: `snake_case` (e.g., `learning_rate`, `batch_size`)
+- **Classes**: `PascalCase` (e.g., `MyModel`, `DataModule`)
+- **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_EPOCHS`, `NUM_CLASSES`)
+- **Private methods**: Prefix with `_` (e.g., `_compute_loss`)
+
+### Type Hints
+
+```python
+import torch
+from torch import nn, Tensor
+from typing import Tuple, Optional
+
+def forward(self, x: Tensor) -> Tuple[Tensor, Tensor]:
+    """Forward pass with type hints."""
+    logits = self.model(x)
+    probs = torch.softmax(logits, dim=-1)
+    return logits, probs
+```
 
 ## 📦 Package Management with uv
 

@@ -2,11 +2,15 @@
 
 This guide will help you set up the project and run your first experiment.
 
+> [!NOTE]
+> This project uses **PyTorch Lightning** for training and **Weights & Biases** for experiment tracking. Make sure you have a W&B account (free for academics).
+
 ## 📋 Prerequisites
 
 - Python 3.12 or higher
 - Git
 - CUDA-capable GPU (optional, but recommended for deep learning)
+- [Weights & Biases account](https://wandb.ai/signup) (free for academic use)
 
 ## 🚀 Quick Start
 
@@ -29,16 +33,23 @@ source .venv/bin/activate  # On Linux/Mac
 .venv\Scripts\activate     # On Windows
 ```
 
+> [!TIP]
+> Use `uv sync --all-extras` to install all optional dependencies including NLP and CV libraries.
+
 ### 2. Verify Installation
 
 ```bash
 # Check that packages are installed
 python -c "import torch; print(f'PyTorch version: {torch.__version__}')"
-python -c "import numpy; print(f'NumPy version: {numpy.__version__}')"
+python -c "import pytorch_lightning as pl; print(f'Lightning version: {pl.__version__}')"
+python -c "import wandb; print(f'W&B version: {wandb.__version__}')"
 
 # Check CUDA availability (if using GPU)
 python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
 ```
+
+> [!WARNING]
+> If CUDA is not available but you have a GPU, you may need to reinstall PyTorch with CUDA support. See [PyTorch installation guide](https://pytorch.org/get-started/locally/).
 
 ### 3. Set Up Your Data
 
