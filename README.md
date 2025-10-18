@@ -6,16 +6,10 @@
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A comprehensive, well-structured data science project template for academic research, powered by [uv](https://github.com/astral-sh/uv) for fast and reliable Python package management.
 
-> [!NOTE]
-> This project template uses **PyTorch Lightning** for scalable training and **Weights & Biases** for experiment tracking, following modern deep learning best practices.
+TODO: fill this in
 
-## 🎓 Project Overview
-
-This project provides a cookie-cutter structure for deep learning research projects, specifically designed for academic use. It follows best practices for reproducibility, maintainability, and collaboration.
-
-## 📁 Project Structure
+##  Project Structure
 
 ```
 .
@@ -58,68 +52,8 @@ This project provides a cookie-cutter structure for deep learning research proje
 - Python 3.12 or higher
 - [uv](https://github.com/astral-sh/uv) package manager
 
-### Installation
 
-1. **Clone the repository**
-
-   ```bash
-   git clone <repository-url>
-   cd Deep_Learning_Final_Project
-   ```
-
-2. **Install uv** (if not already installed)
-
-   ```bash
-   pip install uv
-   ```
-
-3. **Create a virtual environment and install dependencies**
-
-   ```bash
-   # Install production dependencies
-   uv sync
-   
-   # Install with development dependencies
-   uv sync --extra dev
-   
-   # Install with all optional dependencies
-   uv sync --all-extras
-   ```
-
-4. **Activate the virtual environment**
-
-   ```bash
-   source .venv/bin/activate  # On Linux/Mac
-   # or
-   .venv\Scripts\activate     # On Windows
-   ```
-
-### Quick Start for Development
-
-```bash
-# Install all development tools
-uv sync --extra dev
-
-# Set up pre-commit hooks (recommended for code quality)
-pre-commit install
-
-# Start Jupyter Lab for notebooks
-jupyter lab
-
-# Run tests
-pytest
-
-# Format code with ruff (preferred) or black
-ruff format src/ tests/
-# or
-black src/ tests/
-isort src/ tests/
-
-# Lint code
-ruff check src/ tests/
-```
-
-## ⚡ Installation (1 minute)
+## Installation 
 
 ```bash
 # Clone the repository
@@ -138,20 +72,20 @@ source .venv/bin/activate  # Linux/Mac
 .venv\Scripts\activate     # Windows
 ```
 
-## 🚀 Quick Commands
+## Quick setup
 
 ```bash
-# Run tests
-make test
-
-# Format code
-make format
-
-# Start Jupyter Lab
-make run-notebook
-
-# See all available commands
-make help
+  make install        - Install production dependencies
+  make install-dev    - Install development dependencies
+  make test          - Run tests with coverage
+  make lint          - Run linters (ruff, mypy)
+  make format        - Format code (black, isort)
+  make clean         - Clean build artifacts and cache
+  make run-notebook  - Start Jupyter Lab
+  make train         - Run example training script
+  make docs          - Build documentation
+  make pre-commit    - Install pre-commit hooks
+  make check-all     - Run format, lint, and test
 ```
 
 ### Academic Writing
@@ -164,10 +98,6 @@ make help
 - [uv Documentation](https://github.com/astral-sh/uv)
 - [Pre-commit Hooks](https://pre-commit.com/)
 
-## 📧 Contact
+## Contact
 
-For questions or collaboration opportunities, please contact [your contact information].
-
----
-
-**Note**: This is a template project. Customize it according to your specific research needs.
+Ryan Healy and Angie Yoon
