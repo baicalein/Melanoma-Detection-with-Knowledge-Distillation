@@ -1,4 +1,4 @@
-# Deep Learning Final Project
+# Objective
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
@@ -9,9 +9,20 @@
 
 TODO: fill this in
 
+## Table of Contents
+- [Objective](#objective)
+  - [Table of Contents](#table-of-contents)
+  - [Project Structure](#project-structure)
+  - [Quick Setup](#quick-setup)
+  - [Installation](#installation)
+  - [Academic Writing Examples](#academic-writing-examples)
+  - [Contact](#contact)
+
+
+
 ##  Project Structure
 
-```
+```bash
 .
 ├── src/                          # Source code for the project
 │   └── deep_learning_final_project/
@@ -45,13 +56,24 @@ TODO: fill this in
 └── README.md                    # This file
 ```
 
-## 🚀 Getting Started
 
-### Prerequisites
 
-- Python 3.12 or higher
-- [uv](https://github.com/astral-sh/uv) package manager
 
+## Quick Setup
+
+```bash
+  make install        - Install production dependencies
+  make install-dev    - Install development dependencies
+  make test          - Run tests with coverage
+  make lint          - Run linters (ruff, mypy)
+  make format        - Format code (black, isort)
+  make clean         - Clean build artifacts and cache
+  make run-notebook  - Start Jupyter Lab
+  make train         - Run example training script
+  make docs          - Build documentation
+  make pre-commit    - Install pre-commit hooks
+  make check-all     - Run format, lint, and test
+```
 
 ## Installation 
 
@@ -72,31 +94,12 @@ source .venv/bin/activate  # Linux/Mac
 .venv\Scripts\activate     # Windows
 ```
 
-## Quick setup
-
-```bash
-  make install        - Install production dependencies
-  make install-dev    - Install development dependencies
-  make test          - Run tests with coverage
-  make lint          - Run linters (ruff, mypy)
-  make format        - Format code (black, isort)
-  make clean         - Clean build artifacts and cache
-  make run-notebook  - Start Jupyter Lab
-  make train         - Run example training script
-  make docs          - Build documentation
-  make pre-commit    - Install pre-commit hooks
-  make check-all     - Run format, lint, and test
-```
-
-### Academic Writing
+## Academic Writing Examples
 
 - [Scientific Python Lectures](https://lectures.scientific-python.org/)
 - [Reproducible Research Best Practices](https://www.nature.com/articles/s41562-016-0021)
 
-### Tools
-
-- [uv Documentation](https://github.com/astral-sh/uv)
-- [Pre-commit Hooks](https://pre-commit.com/)
+TODO: add in pre commit hooks docs
 
 ## Contact
 
