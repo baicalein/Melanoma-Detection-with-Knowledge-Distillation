@@ -15,7 +15,6 @@ TODO: fill this in
   - [Project Structure](#project-structure)
   - [Quick Setup](#quick-setup)
   - [Installation](#installation)
-  - [Academic Writing Examples](#academic-writing-examples)
   - [Contact](#contact)
 
 
@@ -94,10 +93,6 @@ source .venv/bin/activate  # Linux/Mac
 .venv\Scripts\activate     # Windows
 ```
 
-## Academic Writing Examples
-
-- [Scientific Python Lectures](https://lectures.scientific-python.org/)
-- [Reproducible Research Best Practices](https://www.nature.com/articles/s41562-016-0021)
 
 TODO: add in pre commit hooks docs
 
