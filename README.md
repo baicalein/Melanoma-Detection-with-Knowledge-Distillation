@@ -7,7 +7,8 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 
-TODO: fill this in
+This repo explores high performing knowledge distillation targeting cell phones and edge devices using the HAM1000 melonoma classification dataset.
+
 
 ## Table of Contents
 - [Objective](#objective)
