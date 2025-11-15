@@ -1,0 +1,33 @@
+{
+  "timestamp": 1763232441.554972,
+  "baseline": {
+    "path": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/gbm/gbm_baseline.joblib",
+    "train": {
+      "accuracy": 1.0,
+      "roc_auc": 1.0
+    },
+    "val": {
+      "accuracy": 0.9041437843235147,
+      "roc_auc": 0.8765304580037285
+    }
+  },
+  "tuned": {
+    "path": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/gbm/gbm_tuned_randomsearch.joblib",
+    "best_params": {
+      "min_samples_leaf": 1,
+      "max_leaf_nodes": 63,
+      "max_iter": 400,
+      "learning_rate": 0.2,
+      "l2_regularization": 0.01
+    },
+    "train": {
+      "accuracy": 1.0,
+      "roc_auc": 1.0
+    },
+    "val": {
+      "accuracy": 0.9006490264603095,
+      "roc_auc": 0.8973975915755531
+    }
+  },
+  "grid_cv_results": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/gbm/gbm_randomsearch_cv_results.json"
+}

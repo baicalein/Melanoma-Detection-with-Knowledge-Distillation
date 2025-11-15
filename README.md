@@ -43,5 +43,10 @@ Ryan Healy (rah5ff) and Angie Yoon
 
 ```bash
 ## see folders structure
+## brew install tree
 tree -d -I '.git|.venv|venv|__pycache__' -L 3
+
+## combine pngs - useful if a lot 
+# brew install imagemagick
+magick $(ls -v *.png) -append combined_vertical.png
 ```
