@@ -235,3 +235,4 @@ __marimo__/
 scratch
 models
 data
+*.pth
