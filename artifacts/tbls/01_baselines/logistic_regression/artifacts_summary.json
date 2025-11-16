@@ -1,0 +1,31 @@
+{
+  "timestamp": 1763232034.158143,
+  "baseline": {
+    "path": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/logistic_regression/logistic_baseline.joblib",
+    "train": {
+      "accuracy": 0.9208686969545682,
+      "roc_auc": 0.929212221033733
+    },
+    "val": {
+      "accuracy": 0.8951572641038442,
+      "roc_auc": 0.865029979341966
+    }
+  },
+  "tuned": {
+    "path": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/logistic_regression/logistic_tuned_gridsearch.joblib",
+    "best_params": {
+      "clf__C": 0.01,
+      "clf__penalty": "l2",
+      "clf__solver": "saga"
+    },
+    "train": {
+      "accuracy": 0.914752870693959,
+      "roc_auc": 0.912321213899643
+    },
+    "val": {
+      "accuracy": 0.9026460309535697,
+      "roc_auc": 0.8768226936060867
+    }
+  },
+  "grid_cv_results": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/logistic_regression/gridsearch_cv_results.json"
+}

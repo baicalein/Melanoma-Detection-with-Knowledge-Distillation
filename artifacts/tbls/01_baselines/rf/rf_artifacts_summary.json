@@ -1,0 +1,33 @@
+{
+  "timestamp": 1763232929.077228,
+  "baseline": {
+    "path": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/rf/rf_baseline.joblib",
+    "train": {
+      "accuracy": 1.0,
+      "roc_auc": 1.0
+    },
+    "val": {
+      "accuracy": 0.8931602596105841,
+      "roc_auc": 0.8574356325893082
+    }
+  },
+  "tuned": {
+    "path": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/rf/rf_tuned_randomsearch.joblib",
+    "best_params": {
+      "n_estimators": 800,
+      "min_samples_split": 5,
+      "min_samples_leaf": 4,
+      "max_features": "sqrt",
+      "max_depth": 10
+    },
+    "train": {
+      "accuracy": 0.9338492261607588,
+      "roc_auc": 0.9981213457903819
+    },
+    "val": {
+      "accuracy": 0.8936595107338992,
+      "roc_auc": 0.8648788229959187
+    }
+  },
+  "grid_cv_results": "/Users/ryan.healy/DS_MSDS/Deep_Learning_Final_Project/artifacts/tbls/01_baselines/rf/rf_randomsearch_cv_results.json"
+}

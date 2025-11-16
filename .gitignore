@@ -233,3 +233,6 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 scratch
+models
+data
+*.pth
