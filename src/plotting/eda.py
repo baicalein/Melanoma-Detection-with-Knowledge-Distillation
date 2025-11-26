@@ -2,19 +2,20 @@
 This script understands exploratory data analysis (EDA) 
 """
 
+import argparse
 import json
 import logging
 import pathlib
 import sys
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from matplotlib.ticker import StrMethodFormatter
 
 ROOT = pathlib.Path(__file__).parent.parent.parent
@@ -228,7 +229,6 @@ def profile_target(
 
 # run eda if called as script
 if __name__ == "__main__":
-    import argparse
     p = argparse.ArgumentParser(description="Profile target and related covariates in HAM10000 CSV.")
     p.add_argument("--csv", type=str, default=None, help="Path to processed CSV (defaults to labeled_ham10000.csv)")
     p.add_argument("--out", type=str, default=None, help="Output directory for figures")

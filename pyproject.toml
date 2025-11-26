@@ -1,7 +1,7 @@
 [project]
 name = "deep-learning-final-project"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "Melanoma detection with knowledge distillation for mobile deployment"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -10,6 +10,7 @@ dependencies = [
     "matplotlib>=3.10.7",
     "numpy>=2.3.4",
     "pandas>=2.3.3",
+    "pillow>=10.0.0",
     "python-dotenv>=1.2.1",
     "scikit-learn>=1.7.2",
     "seaborn>=0.13.2",
@@ -21,3 +22,31 @@ dependencies = [
     "validators>=0.35.0",
     "wandb>=0.22.2",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "D", "UP"]
+ignore = ["D100", "D104", "D107"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
