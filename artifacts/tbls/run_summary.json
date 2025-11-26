@@ -1,0 +1,133 @@
+{
+  "generated": "2025-11-26T15:57:11.581343",
+  "experiments": [
+    {
+      "name": "teacher_resnet34_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.813615333773959,
+        "precision": 0.35602094240837695,
+        "recall": 0.7906976744186046,
+        "f1": 0.49097472924187724,
+        "specificity": 0.8165548098434005,
+        "roc_auc": 0.8990643913774865,
+        "pr_auc": 0.5631964619319713,
+        "threshold_at_target_sens": 2.5820151917964936e-15,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.20301352438356254,
+        "mce": 0.4215386354562008,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T1.0_alpha0.5",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8017184401850628,
+        "precision": 0.34615384615384615,
+        "recall": 0.8372093023255814,
+        "f1": 0.4897959183673469,
+        "specificity": 0.7971662938105891,
+        "roc_auc": 0.9179109654371087,
+        "pr_auc": 0.6653776264932696,
+        "threshold_at_target_sens": 0.0018307388527318835,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.2220174747630609,
+        "mce": 0.4200779638792339,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T1.0_alpha0.9",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8374091209517515,
+        "precision": 0.391812865497076,
+        "recall": 0.7790697674418605,
+        "f1": 0.5214007782101168,
+        "specificity": 0.8448918717375093,
+        "roc_auc": 0.9065778748937794,
+        "pr_auc": 0.6069690603597653,
+        "threshold_at_target_sens": 0.0007528837886638939,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.19755290598859082,
+        "mce": 0.37170317478296233,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T2.0_alpha0.5",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8420356906807667,
+        "precision": 0.4034582132564842,
+        "recall": 0.813953488372093,
+        "f1": 0.5394990366088632,
+        "specificity": 0.8456375838926175,
+        "roc_auc": 0.9206076686956975,
+        "pr_auc": 0.6662880469074935,
+        "threshold_at_target_sens": 2.0366519137837713e-08,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.19717880027702286,
+        "mce": 0.37079921235208924,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T2.0_alpha0.9",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8321216126900198,
+        "precision": 0.38285714285714284,
+        "recall": 0.7790697674418605,
+        "f1": 0.5134099616858238,
+        "specificity": 0.8389261744966443,
+        "roc_auc": 0.9012104815913151,
+        "pr_auc": 0.5923853206004224,
+        "threshold_at_target_sens": 1.7183720046887174e-05,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.20637446315928318,
+        "mce": 0.38607028428088414,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "quantized_dynamic",
+      "type": "quantization",
+      "completed": false,
+      "metrics": null
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "completed": 5,
+    "missing": [
+      "quantized_dynamic"
+    ]
+  }
+}
