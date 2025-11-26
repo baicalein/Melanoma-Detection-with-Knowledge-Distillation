@@ -2,8 +2,9 @@
 # Provides convenient commands for environment setup, training, and evaluation
 
 .PHONY: help install install-dev test lint format clean \
-        data splits train-teacher train-student train-all \
-        quantize evaluate run-ablation check-all summary
+        data splits train-teacher train-teacher-single \
+        train-resnet-teachers train-efficientnet-teachers \
+        train-student train-all quantize evaluate run-ablation check-all summary
 
 # ============================================================================
 # Configuration
@@ -39,10 +40,13 @@ help:
 	@echo "  make splits           - Create lesion-aware train/val/holdout splits"
 	@echo ""
 	@echo "TRAINING:"
-	@echo "  make train-teacher    - Train teacher model (ResNet34 + focal loss)"
-	@echo "  make train-student    - Train student with KD (MobileNetV3)"
-	@echo "  make train-all        - Run full training pipeline"
-	@echo "  make run-ablation     - Run KD ablation (T∈{1,2}, α∈{0.5,0.9})"
+	@echo "  make train-teacher          - Train ALL teacher models (skips existing)"
+	@echo "  make train-teacher-single   - Train single teacher (use TEACHER_ARCH=resnet34)"
+	@echo "  make train-resnet-teachers  - Train all ResNet teachers (18/34/50/101/152)"
+	@echo "  make train-efficientnet-teachers - Train all EfficientNet teachers (B0-B7)"
+	@echo "  make train-student          - Train student with KD (MobileNetV3)"
+	@echo "  make train-all              - Run full training pipeline"
+	@echo "  make run-ablation           - Run KD ablation (T∈{1,2}, α∈{0.5,0.9})"
 	@echo ""
 	@echo "EVALUATION:"
 	@echo "  make quantize         - Quantize student model to INT8"
@@ -111,19 +115,82 @@ verify-splits:
 # ============================================================================
 # Training
 # ============================================================================
-train-teacher: splits
+
+# All teacher architectures to train
+RESNET_ARCHS := resnet18 resnet34 resnet50 resnet101 resnet152
+EFFICIENTNET_ARCHS := efficientnet_b0 efficientnet_b1 efficientnet_b2 efficientnet_b3 \
+                      efficientnet_b4 efficientnet_b5 efficientnet_b6 efficientnet_b7
+ALL_TEACHER_ARCHS := $(RESNET_ARCHS) $(EFFICIENTNET_ARCHS)
+
+# Train a single teacher (use TEACHER_ARCH variable)
+train-teacher-single: splits
 	@echo "============================================================================"
 	@echo "Training Teacher Model: $(TEACHER_ARCH)"
 	@echo "============================================================================"
-	$(PYTHON) scripts/train_teacher.py \
-		--architecture $(TEACHER_ARCH) \
-		--epochs $(EPOCHS) \
-		--batch-size $(BATCH_SIZE) \
-		--lr 1e-4 \
-		--loss focal \
-		--patience 10 \
-		--seed $(SEED)
-	@echo "✓ Teacher training complete: $(TEACHER_CKPT)"
+	@if [ -f "models/checkpoints/$(TEACHER_ARCH)_best.pth" ] || [ -f "models/checkpoints/teacher_$(TEACHER_ARCH)_focal_best.pth" ]; then \
+		echo "⏭  Skipping $(TEACHER_ARCH) - checkpoint already exists"; \
+	else \
+		$(PYTHON) scripts/train_teacher.py \
+			--architecture $(TEACHER_ARCH) \
+			--epochs $(EPOCHS) \
+			--batch-size $(BATCH_SIZE) \
+			--lr 1e-4 \
+			--loss focal \
+			--patience 10 \
+			--seed $(SEED); \
+		echo "✓ Teacher training complete: $(TEACHER_ARCH)"; \
+	fi
+
+# Train all teacher architectures (skips existing checkpoints)
+train-teacher: splits
+	@echo "============================================================================"
+	@echo "Training All Teacher Models (skipping existing checkpoints)"
+	@echo "============================================================================"
+	@for arch in $(ALL_TEACHER_ARCHS); do \
+		if [ -f "models/checkpoints/$${arch}_best.pth" ] || [ -f "models/checkpoints/teacher_$${arch}_focal_best.pth" ]; then \
+			echo "⏭  Skipping $$arch - checkpoint already exists"; \
+		else \
+			echo ""; \
+			echo ">>> Training $$arch..."; \
+			$(PYTHON) scripts/train_teacher.py \
+				--architecture $$arch \
+				--epochs $(EPOCHS) \
+				--batch-size $(BATCH_SIZE) \
+				--lr 1e-4 \
+				--loss focal \
+				--patience 10 \
+				--seed $(SEED) || exit 1; \
+			echo "✓ $$arch training complete"; \
+		fi; \
+	done
+	@echo ""
+	@echo "============================================================================"
+	@echo "✓ All teacher training complete!"
+	@echo "============================================================================"
+
+# Train only ResNet teachers
+train-resnet-teachers: splits
+	@echo "Training ResNet teachers..."
+	@for arch in $(RESNET_ARCHS); do \
+		if [ -f "models/checkpoints/$${arch}_best.pth" ] || [ -f "models/checkpoints/teacher_$${arch}_focal_best.pth" ]; then \
+			echo "⏭  Skipping $$arch - checkpoint already exists"; \
+		else \
+			echo ">>> Training $$arch..."; \
+			$(PYTHON) scripts/train_teacher.py --architecture $$arch --epochs $(EPOCHS) --seed $(SEED) || exit 1; \
+		fi; \
+	done
+
+# Train only EfficientNet teachers  
+train-efficientnet-teachers: splits
+	@echo "Training EfficientNet teachers..."
+	@for arch in $(EFFICIENTNET_ARCHS); do \
+		if [ -f "models/checkpoints/$${arch}_best.pth" ] || [ -f "models/checkpoints/teacher_$${arch}_focal_best.pth" ]; then \
+			echo "⏭  Skipping $$arch - checkpoint already exists"; \
+		else \
+			echo ">>> Training $$arch..."; \
+			$(PYTHON) scripts/train_teacher.py --architecture $$arch --epochs $(EPOCHS) --seed $(SEED) || exit 1; \
+		fi; \
+	done
 
 train-student: train-teacher
 	@echo "============================================================================"

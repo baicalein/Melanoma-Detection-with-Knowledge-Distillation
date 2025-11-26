@@ -40,8 +40,8 @@ logger = logging.getLogger(__name__)
 # Expected Experiments (based on project requirements)
 # ============================================================================
 
-# Teacher architectures to evaluate
-TEACHER_ARCHITECTURES = ["resnet34"]
+# Teacher architectures to evaluate (all available ResNet models)
+TEACHER_ARCHITECTURES = ["resnet18", "resnet34", "resnet50", "resnet101", "resnet152"]
 TEACHER_LOSS_TYPES = ["focal"]
 
 # KD hyperparameter grid (focused search per feedback)
@@ -72,10 +72,19 @@ def find_teacher_runs() -> List[ExperimentStatus]:
         for loss in TEACHER_LOSS_TYPES:
             exp_name = f"teacher_{arch}_{loss}"
             
-            # Check for checkpoint
+            # Check for checkpoint (new naming convention)
             ckpt_path = CHECKPOINTS_DIR / f"{exp_name}_best.pth"
             meta_path = CHECKPOINTS_DIR / f"{exp_name}_best_meta.json"
             metrics_path = FIGURES_DIR / "training" / exp_name / "holdout_metrics.json"
+            
+            # Also check for legacy naming convention (resnet34_best.pth)
+            legacy_ckpt_path = CHECKPOINTS_DIR / f"{arch}_best.pth"
+            legacy_meta_path = CHECKPOINTS_DIR / f"{arch}_best_meta.json"
+            
+            # Use whichever exists
+            if legacy_ckpt_path.exists() and not ckpt_path.exists():
+                ckpt_path = legacy_ckpt_path
+                meta_path = legacy_meta_path
             
             completed = ckpt_path.exists()
             
@@ -96,6 +105,9 @@ def find_teacher_runs() -> List[ExperimentStatus]:
                     with open(meta_path) as f:
                         meta = json.load(f)
                         timestamp = meta.get("timestamp")
+                        # Also try to get metrics from meta if not found elsewhere
+                        if metrics is None and "metrics" in meta:
+                            metrics = meta["metrics"]
                 except Exception:
                     pass
             

@@ -144,6 +144,24 @@ For ablation studies, also run:
 - T=2, α=0.9
 - T=1, α=0.9
 
+**Teacher Architecture Comparison:**
+
+Train all teacher architectures at once (skips any that already have checkpoints):
+
+```bash
+# Train ALL teachers (ResNet + EfficientNet)
+make train-teacher
+
+# Or train specific families:
+make train-resnet-teachers       # ResNet-18/34/50/101/152
+make train-efficientnet-teachers # EfficientNet-B0 through B7
+
+# Or train a single architecture:
+make train-teacher-single TEACHER_ARCH=resnet50
+```
+
+Or use `make summary` to see which experiments are complete and get commands for missing ones.
+
 ### Step 3: Quantize Student Model
 
 ```bash
@@ -180,7 +198,13 @@ TODO: consider having this auto update from pandas
 
 | Model | Size (MB) | Latency (ms) | ROC-AUC | ECE |
 |-------|-----------|--------------|---------|-----|
-| Teacher (ResNet-34) | ~85 | ~15 | TBD | TBD |
+| ResNet-18 | ~45 | ~8 | TBD | TBD |
+| ResNet-34 | ~85 | ~15 | TBD | TBD |
+| ResNet-50 | ~98 | ~20 | TBD | TBD |
+| ResNet-101 | ~171 | ~35 | TBD | TBD |
+| ResNet-152 | ~230 | ~50 | TBD | TBD |
+| EfficientNet-B0 | ~21 | ~10 | TBD | TBD |
+| EfficientNet-B7 | ~256 | ~80 | TBD | TBD |
 | Student (MobileNetV3-Small) | ~10 | ~5 | TBD | TBD |
 | Student (INT8 Quantized) | ~3 | ~3 | TBD | TBD |
 
@@ -204,13 +228,18 @@ make lint          # Run linters (ruff, mypy)
 make format        # Format code (black, isort)
 make clean         # Clean build artifacts
 make check-all     # Run format, lint, and test
+make summary       # Generate experiment status report
 ```
 
 ## Changelog
 
 - **Lesion-aware data splitting**: Prevents data leakage by ensuring images from the same lesion don't appear in different splits
-- **Teacher model**: ResNet-34 with focal loss for handling class imbalance (~11% melanoma prevalence)
+- **Teacher models**: Multiple architectures supported for ablation:
+  - **ResNet family**: ResNet-18, 34, 50, 101, 152
+  - **EfficientNet family**: EfficientNet-B0 through B7
+  - All pretrained on ImageNet, fine-tuned with focal loss for class imbalance
 - **Student model**: MobileNetV3-Small for mobile deployment (<25 MB)
 - **Knowledge distillation**: Temperature-scaled KD with focused hyperparameter search (T ∈ {1, 2}, α ∈ {0.5, 0.9})
 - **Comprehensive evaluation**: ROC-AUC, PR-AUC, sensitivity/specificity at 95% recall, ECE calibration
 - **INT8 quantization**: Post-training quantization for edge deployment
+- **Experiment tracking**: W&B integration for logging, `make summary` for experiment status
