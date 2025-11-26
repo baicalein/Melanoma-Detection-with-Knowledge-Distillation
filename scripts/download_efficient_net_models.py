@@ -1,7 +1,6 @@
 import argparse
 import logging
 import pathlib
-import sys
 
 import torch
 import torchvision.models as tm
@@ -67,7 +66,9 @@ def download_models(out_dir: pathlib.Path, models_list):
 
 
 def main(argv=None):
-    p = argparse.ArgumentParser(description="Download EfficientNet models from torchvision and save state_dicts.")
+    p = argparse.ArgumentParser(
+        description="Download EfficientNet models from torchvision and save state_dicts."
+    )
     p.add_argument("--out", type=str, default=str(DEFAULT_OUT), help="Output directory")
     p.add_argument(
         "--models",

@@ -1,5 +1,4 @@
-"""
-Post-training quantization for mobile deployment.
+"""Post-training quantization for mobile deployment.
 
 Provides:
 - Dynamic INT8 quantization
@@ -13,14 +12,14 @@ import os
 import pathlib
 import tempfile
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 import numpy as np
 import torch
 import torch.nn as nn
 from torch.quantization import get_default_qconfig, quantize_dynamic
 
-from src.config import CHECKPOINTS_DIR, QuantizationConfig
+from src.config import CHECKPOINTS_DIR
 from src.evaluation.metrics import compute_classification_metrics
 
 logger = logging.getLogger(__name__)
@@ -30,29 +29,29 @@ def quantize_model_dynamic(
     model: nn.Module,
     dtype: torch.dtype = torch.qint8,
 ) -> nn.Module:
-    """
-    Apply dynamic quantization to model.
-    
+    """Apply dynamic quantization to model.
+
     Dynamic quantization quantizes weights but computes activations in float.
     Good for models with LSTM/Transformer layers or when calibration data unavailable.
-    
+
     Args:
         model: PyTorch model to quantize
         dtype: Quantization dtype (qint8 or float16)
-    
+
     Returns:
         Quantized model
+
     """
     model_cpu = copy.deepcopy(model).cpu()
     model_cpu.eval()
-    
+
     # Quantize Linear and Conv layers
     quantized_model = quantize_dynamic(
         model_cpu,
         {nn.Linear, nn.Conv2d},
         dtype=dtype,
     )
-    
+
     logger.info("Applied dynamic INT8 quantization")
     return quantized_model
 
@@ -63,27 +62,27 @@ def quantize_model_static(
     backend: str = "qnnpack",
     num_calibration_batches: int = 100,
 ) -> nn.Module:
-    """
-    Apply static quantization with calibration.
-    
+    """Apply static quantization with calibration.
+
     Static quantization quantizes both weights and activations.
     Requires calibration data to determine activation ranges.
-    
+
     Args:
         model: PyTorch model to quantize
         calibration_loader: DataLoader for calibration
         backend: Quantization backend ("qnnpack" for mobile, "fbgemm" for server)
         num_calibration_batches: Number of batches for calibration
-    
+
     Returns:
         Quantized model
+
     """
     model_cpu = copy.deepcopy(model).cpu()
     model_cpu.eval()
-    
+
     # Set quantization backend
     torch.backends.quantized.engine = backend
-    
+
     # Fuse modules (conv-bn-relu)
     # Note: This is model-specific and may need adjustment
     try:
@@ -95,13 +94,13 @@ def quantize_model_static(
     except Exception:
         model_fused = model_cpu
         logger.warning("Module fusion failed, proceeding without fusion")
-    
+
     # Set qconfig
     model_fused.qconfig = get_default_qconfig(backend)
-    
+
     # Prepare for quantization
     model_prepared = torch.quantization.prepare(model_fused, inplace=False)
-    
+
     # Calibration
     logger.info(f"Calibrating with {num_calibration_batches} batches...")
     with torch.no_grad():
@@ -110,10 +109,10 @@ def quantize_model_static(
                 break
             images = images.cpu()
             model_prepared(images)
-    
+
     # Convert to quantized model
     quantized_model = torch.quantization.convert(model_prepared, inplace=False)
-    
+
     logger.info(f"Applied static INT8 quantization with {backend} backend")
     return quantized_model
 
@@ -122,42 +121,42 @@ def get_model_size_mb(model: nn.Module) -> float:
     """Get model size in megabytes."""
     with tempfile.NamedTemporaryFile(delete=False) as f:
         torch.save(model.state_dict(), f.name)
-        size_mb = os.path.getsize(f.name) / (1024 ** 2)
+        size_mb = os.path.getsize(f.name) / (1024**2)
         os.unlink(f.name)
-    
+
     return size_mb
 
 
 def measure_latency(
     model: nn.Module,
-    input_shape: Tuple[int, ...] = (1, 3, 224, 224),
+    input_shape: tuple[int, ...] = (1, 3, 224, 224),
     device: str = "cpu",
     warmup: int = 10,
     iterations: int = 100,
-) -> Dict[str, float]:
-    """
-    Measure inference latency.
-    
+) -> dict[str, float]:
+    """Measure inference latency.
+
     Args:
         model: Model to benchmark
         input_shape: Input tensor shape
         device: Device for inference
         warmup: Warmup iterations
         iterations: Benchmark iterations
-    
+
     Returns:
         Dict with latency statistics
+
     """
     model = model.to(device)
     model.eval()
-    
+
     dummy_input = torch.randn(*input_shape, device=device)
-    
+
     # Warmup
     with torch.no_grad():
         for _ in range(warmup):
             _ = model(dummy_input)
-    
+
     # Benchmark
     latencies = []
     with torch.no_grad():
@@ -166,9 +165,9 @@ def measure_latency(
             _ = model(dummy_input)
             end = time.perf_counter()
             latencies.append((end - start) * 1000)  # ms
-    
+
     latencies = np.array(latencies)
-    
+
     return {
         "mean_ms": float(latencies.mean()),
         "std_ms": float(latencies.std()),
@@ -184,34 +183,34 @@ def compare_quantized_model(
     quantized_model: nn.Module,
     dataloader: torch.utils.data.DataLoader,
     device: str = "cpu",
-) -> Dict[str, Any]:
-    """
-    Compare FP32 and quantized models.
-    
+) -> dict[str, Any]:
+    """Compare FP32 and quantized models.
+
     Args:
         fp32_model: Original FP32 model
         quantized_model: Quantized INT8 model
         dataloader: Validation dataloader
         device: Device for evaluation
-    
+
     Returns:
         Comparison metrics including size, latency, and accuracy differences
+
     """
     # Model sizes
     fp32_size = get_model_size_mb(fp32_model)
     quant_size = get_model_size_mb(quantized_model)
-    
+
     # Latency (quantized models run on CPU)
     fp32_latency = measure_latency(fp32_model, device="cpu")
     quant_latency = measure_latency(quantized_model, device="cpu")
-    
+
     # Accuracy comparison
     def evaluate(model, loader, dev):
         model = model.to(dev)
         model.eval()
         all_probs = []
         all_targets = []
-        
+
         with torch.no_grad():
             for images, targets in loader:
                 images = images.to(dev)
@@ -219,14 +218,14 @@ def compare_quantized_model(
                 probs = torch.sigmoid(logits).cpu().numpy()
                 all_probs.append(probs)
                 all_targets.append(targets.numpy())
-        
+
         y_prob = np.concatenate(all_probs)
         y_true = np.concatenate(all_targets)
         return compute_classification_metrics(y_true, y_prob)
-    
+
     fp32_metrics = evaluate(fp32_model, dataloader, device)
     quant_metrics = evaluate(quantized_model, dataloader, "cpu")
-    
+
     return {
         "fp32": {
             "size_mb": fp32_size,
@@ -254,17 +253,17 @@ def compare_quantized_model(
 def save_quantized_model(
     model: nn.Module,
     name: str,
-    output_dir: Optional[pathlib.Path] = None,
+    output_dir: pathlib.Path | None = None,
 ) -> pathlib.Path:
     """Save quantized model to disk."""
     output_dir = output_dir or CHECKPOINTS_DIR
     output_dir = pathlib.Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     path = output_dir / f"{name}_quantized.pth"
     torch.save(model.state_dict(), path)
-    
+
     size_mb = get_model_size_mb(model)
     logger.info(f"Saved quantized model to {path} ({size_mb:.2f} MB)")
-    
+
     return path

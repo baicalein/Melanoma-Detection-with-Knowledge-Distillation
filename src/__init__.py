@@ -1,5 +1,4 @@
-"""
-HAM10000 Melanoma Detection with Knowledge Distillation.
+"""HAM10000 Melanoma Detection with Knowledge Distillation.
 
 This package provides:
 - Data loading and lesion-aware splitting for HAM10000
@@ -17,16 +16,16 @@ Usage:
 """
 
 from src.config import (
-    ExperimentConfig,
-    DataConfig,
-    TeacherConfig,
-    StudentConfig,
-    TrainingConfig,
-    KDConfig,
-    WandbConfig,
-    set_seed,
-    get_device,
     RANDOM_SEED,
+    DataConfig,
+    ExperimentConfig,
+    KDConfig,
+    StudentConfig,
+    TeacherConfig,
+    TrainingConfig,
+    WandbConfig,
+    get_device,
+    set_seed,
 )
 
 __version__ = "0.2.0"

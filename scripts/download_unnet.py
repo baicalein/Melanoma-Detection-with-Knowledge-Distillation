@@ -1,12 +1,12 @@
 # this needs an nvidia gpu
 import os
 from pathlib import Path
+
 import torch
 
 if __name__ == "__main__":
-
     model_type = "GPUNet-0"  # select one
-    precision = "fp32"       # "fp32" or "fp16"
+    precision = "fp32"  # "fp32" or "fp16"
 
     # ensure torch cache is inside the project so cached files are easy to find/wget
     project_root = Path(__file__).resolve().parents[2]
@@ -38,7 +38,6 @@ if __name__ == "__main__":
         if p.is_file() and ("gpunet" in p.name or p.suffix in {".pt", ".pth", ".ckpt"}):
             print(p)
 
-    
     ## Vit
 # https://huggingface.co/google/vit-base-patch16-224
 

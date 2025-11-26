@@ -7,27 +7,24 @@
 
 This project implements knowledge distillation for melanoma detection on the HAM10000 dataset, targeting deployment on mobile phones and edge devices.
 
-## Key Features
-
-- **Lesion-aware data splitting**: Prevents data leakage by ensuring images from the same lesion don't appear in different splits
-- **Teacher model**: ResNet-34 with focal loss for handling class imbalance (~11% melanoma prevalence)
-- **Student model**: MobileNetV3-Small for mobile deployment (<25 MB)
-- **Knowledge distillation**: Temperature-scaled KD with focused hyperparameter search (T ∈ {1, 2}, α ∈ {0.5, 0.9})
-- **Comprehensive evaluation**: ROC-AUC, PR-AUC, sensitivity/specificity at 95% recall, ECE calibration
-- **INT8 quantization**: Post-training quantization for edge deployment
-
 ## Table of Contents
 
 - [Melanoma Detection with Knowledge Distillation](#melanoma-detection-with-knowledge-distillation)
-  - [Key Features](#key-features)
   - [Table of Contents](#table-of-contents)
   - [Project Structure](#project-structure)
   - [Installation](#installation)
   - [Dataset Setup](#dataset-setup)
   - [Reproducing Results](#reproducing-results)
+    - [Step 1: Train Teacher Model](#step-1-train-teacher-model)
+    - [Step 2: Train Student with Knowledge Distillation](#step-2-train-student-with-knowledge-distillation)
+    - [Step 3: Quantize Student Model](#step-3-quantize-student-model)
   - [Configuration](#configuration)
   - [Results](#results)
+    - [Deployment Metrics](#deployment-metrics)
+  - [Important Links](#important-links)
   - [Contact](#contact)
+  - [Development Commands](#development-commands)
+  - [Changelog](#changelog)
 
 ## Project Structure
 
@@ -99,6 +96,7 @@ python -c "from src.data.splits import load_or_create_splits; load_or_create_spl
 ```
 
 Expected output:
+
 - `data/processed/labeled_ham10000.csv` - Full labeled dataset
 - `data/processed/train_data.csv` - Training set (~7,012 images)
 - `data/processed/val_data.csv` - Validation set (~1,502 images)
@@ -121,6 +119,7 @@ python scripts/train_teacher.py \
 ```
 
 Expected outputs:
+
 - `models/checkpoints/teacher_resnet34_focal_best.pth`
 - `artifacts/imgs/training/teacher_resnet34_focal/` (training curves, reliability diagram)
 
@@ -140,6 +139,7 @@ python scripts/train_student.py \
 ```
 
 For ablation studies, also run:
+
 - T=1, α=0.5
 - T=2, α=0.9
 - T=1, α=0.9
@@ -153,6 +153,7 @@ python scripts/quantize_model.py \
 ```
 
 Expected outputs:
+
 - `models/checkpoints/quantized_dynamic_quantized.pth`
 - `artifacts/imgs/quantization/` (deployment comparison plots)
 
@@ -170,31 +171,18 @@ from src.config import (
 )
 ```
 
-Key settings:
-- **Random seed**: 42 (set via `RANDOM_SEED` env var or config)
-- **Data split**: 70/15/15 train/val/holdout, stratified by lesion
-- **Loss**: Focal loss (γ=2, α=0.75) for class imbalance
-- **KD search space**: T ∈ {1, 2}, α ∈ {0.5, 0.9}
-
 ## Results
 
 ### Deployment Metrics
+
+TODO: fill these in
+TODO: consider having this auto update from pandas
 
 | Model | Size (MB) | Latency (ms) | ROC-AUC | ECE |
 |-------|-----------|--------------|---------|-----|
 | Teacher (ResNet-34) | ~85 | ~15 | TBD | TBD |
 | Student (MobileNetV3-Small) | ~10 | ~5 | TBD | TBD |
 | Student (INT8 Quantized) | ~3 | ~3 | TBD | TBD |
-
-### Key Evaluation Metrics
-
-For each model, we report:
-- **ROC-AUC**: Area under ROC curve
-- **PR-AUC**: Area under precision-recall curve
-- **Sensitivity**: True positive rate (recall)
-- **Specificity @95% sensitivity**: Specificity at clinically relevant threshold
-- **PPV/NPV @95% sensitivity**: Positive/negative predictive values
-- **ECE**: Expected Calibration Error
 
 ## Important Links
 
@@ -217,3 +205,12 @@ make format        # Format code (black, isort)
 make clean         # Clean build artifacts
 make check-all     # Run format, lint, and test
 ```
+
+## Changelog
+
+- **Lesion-aware data splitting**: Prevents data leakage by ensuring images from the same lesion don't appear in different splits
+- **Teacher model**: ResNet-34 with focal loss for handling class imbalance (~11% melanoma prevalence)
+- **Student model**: MobileNetV3-Small for mobile deployment (<25 MB)
+- **Knowledge distillation**: Temperature-scaled KD with focused hyperparameter search (T ∈ {1, 2}, α ∈ {0.5, 0.9})
+- **Comprehensive evaluation**: ROC-AUC, PR-AUC, sensitivity/specificity at 95% recall, ECE calibration
+- **INT8 quantization**: Post-training quantization for edge deployment

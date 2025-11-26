@@ -3,7 +3,7 @@
 
 .PHONY: help install install-dev test lint format clean \
         data splits train-teacher train-student train-all \
-        quantize evaluate run-ablation check-all
+        quantize evaluate run-ablation check-all summary
 
 # ============================================================================
 # Configuration
@@ -47,6 +47,7 @@ help:
 	@echo "EVALUATION:"
 	@echo "  make quantize         - Quantize student model to INT8"
 	@echo "  make evaluate         - Evaluate all models on holdout set"
+	@echo "  make summary          - Summarize all runs and show missing experiments"
 	@echo ""
 	@echo "DEVELOPMENT:"
 	@echo "  make test             - Run unit tests"
@@ -189,6 +190,14 @@ student, _ = load_student_checkpoint(str(CHECKPOINTS_DIR/'student_T2_alpha0.5_be
 m = evaluate_model(student, holdout, device); \
 print(f'ROC-AUC: {m.roc_auc:.4f}, ECE: {m.ece:.4f}'); \
 "
+
+summary:
+	@echo "============================================================================"
+	@echo "Summarizing all training runs..."
+	@echo "============================================================================"
+	$(PYTHON) scripts/summarize_runs.py \
+		--markdown artifacts/docs/run_summary.md \
+		--json artifacts/tbls/run_summary.json
 
 # ============================================================================
 # Development
