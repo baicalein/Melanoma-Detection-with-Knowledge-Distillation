@@ -10,7 +10,6 @@ import json
 import logging
 import pathlib
 import sys
-from typing import Optional
 
 # Add src to path
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
@@ -23,13 +22,13 @@ from src.config import (
     PROCESSED_DIR,
     TABLES_DIR,
     DataConfig,
-    TeacherConfig,
     StudentConfig,
+    TeacherConfig,
     get_device,
 )
 from src.data.dataset import HAM10000Dataset, get_eval_transforms
 from src.evaluation.metrics import compute_deployment_metrics, evaluate_model
-from src.models.architectures import TeacherModel, StudentModel
+from src.models.architectures import StudentModel, TeacherModel
 
 logging.basicConfig(
     level=logging.INFO,
@@ -51,7 +50,7 @@ KD_CONFIGS = [
 ]
 
 
-def find_teacher_checkpoint(arch: str) -> Optional[pathlib.Path]:
+def find_teacher_checkpoint(arch: str) -> pathlib.Path | None:
     """Find checkpoint for a teacher architecture."""
     patterns = [
         CHECKPOINTS_DIR / f"{arch}_best.pth",
@@ -64,7 +63,7 @@ def find_teacher_checkpoint(arch: str) -> Optional[pathlib.Path]:
     return None
 
 
-def find_student_checkpoint(temperature: int, alpha: float) -> Optional[pathlib.Path]:
+def find_student_checkpoint(temperature: int, alpha: float) -> pathlib.Path | None:
     """Find checkpoint for a student KD configuration."""
     patterns = [
         CHECKPOINTS_DIR / f"student_T{temperature}_alpha{alpha}_best.pth",
@@ -85,7 +84,7 @@ def evaluate_teacher(
     """Evaluate a teacher model."""
     config = TeacherConfig(architecture=arch)
     model = TeacherModel(config)
-    
+
     checkpoint = torch.load(checkpoint_path, map_location=device)
     if "model_state_dict" in checkpoint:
         model.load_state_dict(checkpoint["model_state_dict"])
@@ -93,13 +92,13 @@ def evaluate_teacher(
         model.load_state_dict(checkpoint["state_dict"])
     else:
         model.load_state_dict(checkpoint)
-    
+
     model = model.to(device)
     model.eval()
-    
+
     metrics = evaluate_model(model, holdout_loader, device)
     deployment = compute_deployment_metrics(model, device=device)
-    
+
     return {
         "model_type": "teacher",
         "architecture": arch,
@@ -128,7 +127,7 @@ def evaluate_student(
     """Evaluate a student model."""
     config = StudentConfig()
     model = StudentModel(config)
-    
+
     checkpoint = torch.load(checkpoint_path, map_location=device)
     if "model_state_dict" in checkpoint:
         model.load_state_dict(checkpoint["model_state_dict"])
@@ -136,13 +135,13 @@ def evaluate_student(
         model.load_state_dict(checkpoint["state_dict"])
     else:
         model.load_state_dict(checkpoint)
-    
+
     model = model.to(device)
     model.eval()
-    
+
     metrics = evaluate_model(model, holdout_loader, device)
     deployment = compute_deployment_metrics(model, device=device)
-    
+
     return {
         "model_type": "student",
         "architecture": f"mobilenet_v3_small (T={temperature}, α={alpha})",
@@ -183,7 +182,7 @@ def main():
     # Create holdout dataloader
     data_config = DataConfig()
     holdout_path = PROCESSED_DIR / "holdout_data.csv"
-    
+
     if not holdout_path.exists():
         logger.error(f"Holdout data not found: {holdout_path}")
         logger.error("Run 'make splits' first to create data splits.")
@@ -200,7 +199,7 @@ def main():
         shuffle=False,
         num_workers=0,  # Avoid multiprocessing issues
     )
-    
+
     logger.info(f"Holdout samples: {len(holdout_dataset)}")
 
     results = []
@@ -209,7 +208,7 @@ def main():
     print("\n" + "=" * 70)
     print("TEACHER MODELS")
     print("=" * 70)
-    
+
     for arch in ALL_TEACHER_ARCHS:
         ckpt = find_teacher_checkpoint(arch)
         if ckpt:
@@ -227,7 +226,7 @@ def main():
     print("\n" + "=" * 70)
     print("STUDENT MODELS (Knowledge Distillation)")
     print("=" * 70)
-    
+
     for kd_cfg in KD_CONFIGS:
         t, a = kd_cfg["temperature"], kd_cfg["alpha"]
         ckpt = find_student_checkpoint(t, a)
@@ -246,23 +245,23 @@ def main():
     print("\n" + "=" * 70)
     print("SUMMARY")
     print("=" * 70)
-    
+
     if results:
         df = pd.DataFrame(results)
-        
+
         # Sort by ROC-AUC descending
         df = df.sort_values("roc_auc", ascending=False)
-        
+
         print(f"\nEvaluated {len(results)} models:")
         print(df[["model_type", "architecture", "roc_auc", "ece", "size_mb"]].to_string(index=False))
-        
+
         # Save results
         output_path = args.output or (TABLES_DIR / "evaluation_results.csv")
         output_path = pathlib.Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output_path, index=False)
         print(f"\n✓ Results saved to: {output_path}")
-        
+
         if args.json_output:
             json_path = pathlib.Path(args.json_output)
             json_path.parent.mkdir(parents=True, exist_ok=True)

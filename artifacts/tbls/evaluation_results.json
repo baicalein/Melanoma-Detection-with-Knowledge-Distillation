@@ -13,7 +13,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 42.67374038696289,
-    "latency_ms": 1.9258566806092858
+    "latency_ms": 1.8734966544434428
   },
   {
     "model_type": "teacher",
@@ -29,7 +29,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 81.26175308227539,
-    "latency_ms": 3.3889644662849605
+    "latency_ms": 3.3691137679852545
   },
   {
     "model_type": "teacher",
@@ -45,7 +45,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 89.88688278198242,
-    "latency_ms": 5.0188371108379215
+    "latency_ms": 4.912759579019621
   },
   {
     "model_type": "teacher",
@@ -61,7 +61,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 162.53570938110352,
-    "latency_ms": 9.67909668921493
+    "latency_ms": 8.993488341802731
   },
   {
     "model_type": "teacher",
@@ -77,7 +77,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 222.3876609802246,
-    "latency_ms": 14.243885896867141
+    "latency_ms": 14.412263713311404
   },
   {
     "model_type": "teacher",
@@ -93,7 +93,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 15.453121185302734,
-    "latency_ms": 6.724470821209252
+    "latency_ms": 5.994171681813896
   },
   {
     "model_type": "teacher",
@@ -109,7 +109,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 25.087932586669922,
-    "latency_ms": 10.043405838077888
+    "latency_ms": 8.606431336374953
   },
   {
     "model_type": "teacher",
@@ -125,7 +125,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 29.640613555908203,
-    "latency_ms": 9.099150815745816
+    "latency_ms": 8.940849542850628
   },
   {
     "model_type": "teacher",
@@ -141,7 +141,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 41.14235305786133,
-    "latency_ms": 10.31689161201939
+    "latency_ms": 9.69633543631062
   },
   {
     "model_type": "teacher",
@@ -157,7 +157,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 67.42782974243164,
-    "latency_ms": 12.786248730262741
+    "latency_ms": 11.884738254593685
   },
   {
     "model_type": "teacher",
@@ -173,7 +173,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 108.77914810180664,
-    "latency_ms": 15.574653283692896
+    "latency_ms": 14.765094940084964
   },
   {
     "model_type": "teacher",
@@ -189,7 +189,7 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 156.26033401489258,
-    "latency_ms": 17.846140874316916
+    "latency_ms": 17.19136665458791
   },
   {
     "model_type": "teacher",
@@ -205,6 +205,6 @@
     "ppv_at_95_sens": 0.11368142762723067,
     "npv_at_95_sens": 0.0,
     "size_mb": 244.5242576599121,
-    "latency_ms": 22.15763673884794
+    "latency_ms": 20.364285454852507
   }
 ]
