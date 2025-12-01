@@ -36,6 +36,7 @@ ALPHAS = [0.5, 0.9]
 
 def run_experiment(
     teacher_ckpt: str,
+    teacher_arch: str,
     temperature: float,
     alpha: float,
     epochs: int = 50,
@@ -50,6 +51,8 @@ def run_experiment(
         "scripts/train_student.py",
         "--teacher-ckpt",
         teacher_ckpt,
+        "--teacher-arch",
+        teacher_arch,
         "--temperature",
         str(temperature),
         "--alpha",
@@ -133,6 +136,12 @@ def main():
         required=True,
         help="Path to teacher checkpoint",
     )
+    parser.add_argument(
+        "--teacher-arch",
+        type=str,
+        default="efficientnet_b2",
+        help="Teacher architecture (default: efficientnet_b2 - best by val ROC-AUC)",
+    )
     parser.add_argument("--epochs", type=int, default=50, help="Epochs per experiment")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--skip-training", action="store_true", help="Only collect results")
@@ -142,6 +151,7 @@ def main():
     logger.info("=" * 80)
     logger.info("KD ABLATION EXPERIMENTS")
     logger.info(f"Teacher: {args.teacher_ckpt}")
+    logger.info(f"Teacher Architecture: {args.teacher_arch}")
     logger.info(f"Search space: T ∈ {TEMPERATURES}, α ∈ {ALPHAS}")
     logger.info(f"Total experiments: {len(TEMPERATURES) * len(ALPHAS)}")
     logger.info("=" * 80)
@@ -152,6 +162,7 @@ def main():
         for T, alpha in product(TEMPERATURES, ALPHAS):
             result = run_experiment(
                 args.teacher_ckpt,
+                args.teacher_arch,
                 T,
                 alpha,
                 epochs=args.epochs,

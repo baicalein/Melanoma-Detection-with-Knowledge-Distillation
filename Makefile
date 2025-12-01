@@ -14,7 +14,8 @@ PYTHON := uv run python
 SEED := 42
 EPOCHS := 50
 BATCH_SIZE := 32
-TEACHER_ARCH := resnet34
+# Best EfficientNet teacher by validation ROC-AUC (0.9134)
+TEACHER_ARCH := efficientnet_b2
 STUDENT_ARCH := mobilenet_v3_small
 TEACHER_CKPT := models/checkpoints/teacher_$(TEACHER_ARCH)_focal_best.pth
 STUDENT_CKPT := models/checkpoints/student_T2_alpha0.5_best.pth
@@ -201,7 +202,9 @@ train-efficientnet-teachers: splits
 
 train-student: train-teacher
 	@echo "============================================================================"
-	@echo "Training Student Model with KD: T=$(KD_TEMP), α=$(KD_ALPHA)"
+	@echo "Training Student Model with KD"
+	@echo "Teacher: $(TEACHER_ARCH) (Best EfficientNet by val ROC-AUC)"
+	@echo "KD Config: T=$(KD_TEMP), α=$(KD_ALPHA)"
 	@echo "============================================================================"
 	$(PYTHON) scripts/train_student.py \
 		--teacher-ckpt $(TEACHER_CKPT) \
@@ -226,9 +229,11 @@ train-all: train-teacher train-student quantize
 run-ablation: train-teacher
 	@echo "============================================================================"
 	@echo "Running KD Ablation: T∈{1,2}, α∈{0.5,0.9}"
+	@echo "Teacher: $(TEACHER_ARCH) (Best EfficientNet by val ROC-AUC)"
 	@echo "============================================================================"
 	$(PYTHON) scripts/run_kd_ablation.py \
 		--teacher-ckpt $(TEACHER_CKPT) \
+		--teacher-arch $(TEACHER_ARCH) \
 		--epochs $(EPOCHS) \
 		--seed $(SEED)
 	@echo "✓ Ablation complete. Results in artifacts/imgs/kd_ablation_summary.json"
