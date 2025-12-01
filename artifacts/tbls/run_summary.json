@@ -1,5 +1,5 @@
 {
-  "generated": "2025-12-01T15:54:14.323320",
+  "generated": "2025-12-01T16:33:31.690820",
   "experiments": [
     {
       "name": "teacher_resnet18_focal",
@@ -117,6 +117,190 @@
       }
     },
     {
+      "name": "teacher_efficientnet_b0_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8625247851949769,
+        "precision": 0.43617021276595747,
+        "recall": 0.7151162790697675,
+        "f1": 0.5418502202643172,
+        "specificity": 0.8814317673378076,
+        "roc_auc": 0.9095997433362816,
+        "pr_auc": 0.6339154534389577,
+        "threshold_at_target_sens": 0.00043864769395440817,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.1478869815289935,
+        "mce": 0.31727862289582176,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b1_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8942498347653668,
+        "precision": 0.524390243902439,
+        "recall": 0.75,
+        "f1": 0.6172248803827751,
+        "specificity": 0.912751677852349,
+        "roc_auc": 0.9242018278618872,
+        "pr_auc": 0.7124415675446466,
+        "threshold_at_target_sens": 0.004178446717560291,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.1577771719980933,
+        "mce": 0.31581844212645194,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b2_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.9015201586252478,
+        "precision": 0.558974358974359,
+        "recall": 0.6337209302325582,
+        "f1": 0.5940054495912807,
+        "specificity": 0.935868754660701,
+        "roc_auc": 0.9044556301267711,
+        "pr_auc": 0.6611970527631207,
+        "threshold_at_target_sens": 5.478248931467533e-05,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.053805750325046385,
+        "mce": 0.3466941773891449,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b3_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8955717118307998,
+        "precision": 0.5364583333333334,
+        "recall": 0.5988372093023255,
+        "f1": 0.5659340659340659,
+        "specificity": 0.9336316181953765,
+        "roc_auc": 0.9114510171166952,
+        "pr_auc": 0.6338879955556239,
+        "threshold_at_target_sens": 0.00012743395927827805,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.06204392057914293,
+        "mce": 0.3647016684214274,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b4_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8949107732980833,
+        "precision": 0.5305164319248826,
+        "recall": 0.6569767441860465,
+        "f1": 0.587012987012987,
+        "specificity": 0.9254287844891872,
+        "roc_auc": 0.9046919168270815,
+        "pr_auc": 0.6325352134195338,
+        "threshold_at_target_sens": 7.546997221652418e-05,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.09594233287036694,
+        "mce": 0.34861514559933837,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b5_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8274950429610046,
+        "precision": 0.3780821917808219,
+        "recall": 0.8023255813953488,
+        "f1": 0.5139664804469274,
+        "specificity": 0.8307233407904548,
+        "roc_auc": 0.8979805074311084,
+        "pr_auc": 0.5572671670415308,
+        "threshold_at_target_sens": 0.01628541760146618,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.2293384153905564,
+        "mce": 0.34336532991507956,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b6_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8797091870456047,
+        "precision": 0.47767857142857145,
+        "recall": 0.622093023255814,
+        "f1": 0.5404040404040404,
+        "specificity": 0.912751677852349,
+        "roc_auc": 0.8943993548722751,
+        "pr_auc": 0.5985902510144051,
+        "threshold_at_target_sens": 0.013653181493282318,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.14181899243900498,
+        "mce": 0.32108464792593205,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_efficientnet_b7_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.9021810971579644,
+        "precision": 0.5545454545454546,
+        "recall": 0.7093023255813954,
+        "f1": 0.6224489795918368,
+        "specificity": 0.9269202087994034,
+        "roc_auc": 0.9179846695454625,
+        "pr_auc": 0.6730856738753032,
+        "threshold_at_target_sens": 0.005671625956892967,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.17603555532456705,
+        "mce": 0.30742014107638843,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
       "name": "student_T1.0_alpha0.5",
       "type": "student",
       "completed": true,
@@ -216,8 +400,8 @@
     }
   ],
   "summary": {
-    "total": 10,
-    "completed": 9,
+    "total": 18,
+    "completed": 17,
     "missing": [
       "quantized_dynamic"
     ]
