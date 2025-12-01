@@ -1,20 +1,19 @@
-"""
-This script understands exploratory data analysis (EDA) 
-"""
+"""This script understands exploratory data analysis (EDA)"""
 
+import argparse
 import json
 import logging
 import pathlib
 import sys
-from typing import Optional, Dict, Any
+from typing import Any
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from matplotlib.ticker import StrMethodFormatter
 
 ROOT = pathlib.Path(__file__).parent.parent.parent
@@ -69,12 +68,11 @@ IMG_SUBDIR.mkdir(parents=True, exist_ok=True)
 
 
 def profile_target(
-    csv_path: Optional[pathlib.Path] = None,
-    out_dir: Optional[pathlib.Path] = None,
+    csv_path: pathlib.Path | None = None,
+    out_dir: pathlib.Path | None = None,
     top_k_localization: int = 10,
-) -> Dict[str, Any]:
-    """
-    Profile the 'target' column and related covariates.
+) -> dict[str, Any]:
+    """Profile the 'target' column and related covariates.
 
     Produces and saves:
       - target count bar plot
@@ -94,7 +92,7 @@ def profile_target(
     logger.info("Loading data from %s", csv_path)
     df = pd.read_csv(csv_path)
 
-    summary: Dict[str, Any] = {}
+    summary: dict[str, Any] = {}
     # Basic target counts
     target_counts = df["target"].value_counts().sort_index()
     target_props = (target_counts / target_counts.sum()).round(4)
@@ -119,8 +117,12 @@ def profile_target(
             "min": float(np.nanmin(age_series)),
             "max": float(np.nanmax(age_series)),
         }
-        age_by_target = age_series.groupby(df["target"]).agg(["count", "mean", "std", "min", "max"]).to_dict()
-        age_stats["by_target"] = {k: {stat: float(v) for stat, v in vals.items()} for k, vals in age_by_target.items()}
+        age_by_target = (
+            age_series.groupby(df["target"]).agg(["count", "mean", "std", "min", "max"]).to_dict()
+        )
+        age_stats["by_target"] = {
+            k: {stat: float(v) for stat, v in vals.items()} for k, vals in age_by_target.items()
+        }
     summary["age_stats"] = age_stats
 
     # Sex distribution
@@ -149,7 +151,7 @@ def profile_target(
         ax.set_xlabel("target")
         ax.set_ylabel("count")
         # format y-axis ticks with thousands separator
-        ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.0f}'))
+        ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
         for i, v in enumerate(target_counts.values):
             ax.text(i, v + max(target_counts.values) * 0.01, f"{int(v):,}", ha="center")
         fig.savefig(IMG_SUBDIR / "target_counts.png", bbox_inches="tight")
@@ -183,7 +185,14 @@ def profile_target(
             sns.boxplot(x="target", y="age_num", data=age_df, ax=axes[0])
             sns.set_palette(prev)
             axes[1].set_title("Boxplot")
-            sns.histplot(data=age_df, x="age_num", hue="target", kde=True, ax=axes[1], palette=get_uva_palette(age_df["target"].nunique()))
+            sns.histplot(
+                data=age_df,
+                x="age_num",
+                hue="target",
+                kde=True,
+                ax=axes[1],
+                palette=get_uva_palette(age_df["target"].nunique()),
+            )
             axes[0].set_title("Age distribution by target")
             fig.savefig(IMG_SUBDIR / "age_by_target.png", bbox_inches="tight")
             plt.close(fig)
@@ -191,14 +200,16 @@ def profile_target(
         # sex distribution stacked bar
         fig, ax = plt.subplots(figsize=(6, 4))
         # compute proportions of sexes within each target, then plot per-target stacked bars
-        sex_by_target_prop = sex_by_target.div(sex_by_target.sum(axis=0), axis=1)  # columns are targets
+        sex_by_target_prop = sex_by_target.div(
+            sex_by_target.sum(axis=0), axis=1
+        )  # columns are targets
         df_plot = sex_by_target_prop.T  # index=target, columns=sex categories
         color_list = get_uva_palette(df_plot.shape[1])
         df_plot.plot(kind="bar", stacked=True, ax=ax, color=color_list)
         ax.set_title("Sex distribution by target (proportion)")
         ax.set_xlabel("target")
         ax.set_ylabel("proportion")
-        ax.yaxis.set_major_formatter(StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_major_formatter(StrMethodFormatter("{x:.2f}"))
         fig.savefig(IMG_SUBDIR / "sex_by_target.png", bbox_inches="tight")
         plt.close(fig)
 
@@ -226,12 +237,23 @@ def profile_target(
 
     return summary
 
+
 # run eda if called as script
 if __name__ == "__main__":
-    import argparse
-    p = argparse.ArgumentParser(description="Profile target and related covariates in HAM10000 CSV.")
-    p.add_argument("--csv", type=str, default=None, help="Path to processed CSV (defaults to labeled_ham10000.csv)")
+    p = argparse.ArgumentParser(
+        description="Profile target and related covariates in HAM10000 CSV."
+    )
+    p.add_argument(
+        "--csv",
+        type=str,
+        default=None,
+        help="Path to processed CSV (defaults to labeled_ham10000.csv)",
+    )
     p.add_argument("--out", type=str, default=None, help="Output directory for figures")
     p.add_argument("--topk", type=int, default=10, help="Top-K localizations to show")
     args = p.parse_args()
-    profile_target(csv_path=pathlib.Path(args.csv) if args.csv else None, out_dir=pathlib.Path(args.out) if args.out else None, top_k_localization=args.topk)
+    profile_target(
+        csv_path=pathlib.Path(args.csv) if args.csv else None,
+        out_dir=pathlib.Path(args.out) if args.out else None,
+        top_k_localization=args.topk,
+    )

@@ -1,0 +1,29 @@
+\begin{tabular}{llrrr}
+\toprule
+Model & Type & ROC-AUC & Accuracy & F1 \\
+\midrule
+resnet50 & Teacher (DL) & 0.783800 & 0.339100 & 0.245800 \\
+resnet152 & Teacher (DL) & 0.851400 & 0.764600 & 0.404000 \\
+resnet101 & Teacher (DL) & 0.854000 & 0.776600 & 0.418700 \\
+Random Forest (baseline) & sklearn & 0.857400 & 0.893200 & NaN \\
+resnet18 & Teacher (DL) & 0.859700 & 0.783900 & 0.424800 \\
+Random Forest (tuned) & sklearn & 0.864900 & 0.893700 & NaN \\
+Logistic Regression (baseline) & sklearn & 0.865000 & 0.895200 & NaN \\
+resnet34 & Teacher (DL) & 0.865800 & 0.791200 & 0.424900 \\
+MobileNetV3 (T2.0_alpha0.9) & Student (KD) & 0.871300 & 0.817800 & 0.460600 \\
+efficientnet_b6 & Teacher (DL) & 0.875700 & 0.883600 & 0.525700 \\
+Gradient Boosting (baseline) & sklearn & 0.876500 & 0.904100 & NaN \\
+Logistic Regression (tuned) & sklearn & 0.876800 & 0.902600 & NaN \\
+MobileNetV3 (T1.0_alpha0.9) & Student (KD) & 0.878100 & 0.824500 & 0.456800 \\
+efficientnet_b5 & Teacher (DL) & 0.883400 & 0.827800 & 0.489200 \\
+efficientnet_b7 & Teacher (DL) & 0.883700 & 0.877000 & 0.509300 \\
+efficientnet_b4 & Teacher (DL) & 0.885300 & 0.886300 & 0.526300 \\
+efficientnet_b3 & Teacher (DL) & 0.888300 & 0.900300 & 0.561400 \\
+Gradient Boosting (tuned) & sklearn & 0.897400 & 0.900600 & NaN \\
+MobileNetV3 (T1.0_alpha0.5) & Student (KD) & 0.898900 & 0.797900 & 0.475900 \\
+efficientnet_b1 & Teacher (DL) & 0.900000 & 0.873000 & 0.528400 \\
+MobileNetV3 (T2.0_alpha0.5) & Student (KD) & 0.902800 & 0.838400 & 0.509100 \\
+efficientnet_b0 & Teacher (DL) & 0.903800 & 0.874300 & 0.540100 \\
+efficientnet_b2 & Teacher (DL) & 0.913400 & 0.900900 & 0.565600 \\
+\bottomrule
+\end{tabular}

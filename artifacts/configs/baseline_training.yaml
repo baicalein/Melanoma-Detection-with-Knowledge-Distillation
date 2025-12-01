@@ -1,84 +1,188 @@
-# Baseline Experiment Configuration
-# This is a template configuration file for a baseline experiment.
-# Customize according to your research needs.
+# =============================================================================
+# HAM10000 Melanoma Detection - Experiment Configuration
+# =============================================================================
+# 
+# This configuration follows the focused search space recommended in feedback:
+# - Loss: focal (for class imbalance)
+# - KD Temperature: T ∈ {1, 2}
+# - KD Alpha: ω ∈ {0.5, 0.9}
+# - Limited LR sweep: {1e-3, 1e-4}
+#
+# =============================================================================
 
 experiment:
-  name: baseline_experiment
-  description: "Initial baseline model for comparison"
-  tags: [baseline, initial]
+  name: melanoma_kd_experiment
+  description: "Knowledge distillation for melanoma detection on HAM10000"
+  tags: [melanoma, kd, ham10000, focal_loss]
 
 # Random seed for reproducibility
 seed: 42
 
-# Data configuration
+# =============================================================================
+# Data Configuration
+# =============================================================================
 data:
   data_dir: ./data/processed
-  train_split: 0.8
-  val_split: 0.1
-  test_split: 0.1
+  raw_dir: ./data/raw/ham_1000_archive
+  
+  # Split ratios (lesion-level stratified)
+  train_ratio: 0.70
+  val_ratio: 0.15
+  holdout_ratio: 0.15
+  
+  # DataLoader settings
   batch_size: 32
   num_workers: 4
-  shuffle_train: true
+  pin_memory: true
+  
+  # Image preprocessing
+  image_size: 224
+  imagenet_mean: [0.485, 0.456, 0.406]
+  imagenet_std: [0.229, 0.224, 0.225]
+  
+  # Augmentation
+  use_augmentation: true
+  horizontal_flip_prob: 0.5
+  vertical_flip_prob: 0.5
+  rotation_degrees: 30
+  color_jitter:
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.15
+    hue: 0.05
+  random_erasing_prob: 0.2
 
-# Model configuration
-model:
-  name: SimpleCNN
-  num_classes: 10
-  in_channels: 3
-  dropout_rate: 0.5
-  pretrained: false
+# =============================================================================
+# Teacher Model Configuration
+# =============================================================================
+teacher:
+  architecture: resnet50  # Options: resnet18, resnet34, resnet50, resnet101, resnet152, efficientnet_b0-b7
+  pretrained: true
+  num_classes: 1  # Binary classification (single logit)
+  dropout: 0.3
+  freeze_backbone: false  # Full fine-tuning recommended
 
-# Training configuration
+# =============================================================================
+# Student Model Configuration
+# =============================================================================
+student:
+  architecture: mobilenet_v3_small
+  pretrained: true
+  num_classes: 1
+  dropout: 0.2
+  
+  # Deployment constraints
+  max_size_mb: 25.0   # Mobile target
+  max_edge_size_mb: 2.0  # Edge target (with quantization)
+
+# =============================================================================
+# Training Configuration
+# =============================================================================
 training:
-  num_epochs: 100
-  learning_rate: 0.001
-  weight_decay: 0.0001
+  max_epochs: 50
+  early_stopping_patience: 10
+  
+  # Optimizer (AdamW)
+  learning_rate: 1.0e-4  # Focused: {1e-3, 1e-4}
+  weight_decay: 1.0e-4
+  
+  # LR Scheduler
+  scheduler: cosine  # Options: cosine, plateau, step
+  warmup_epochs: 3
+  min_lr: 1.0e-6
+  
+  # Loss function (focal for class imbalance)
+  loss_type: focal  # Options: bce, weighted_bce, focal
+  focal_gamma: 2.0
+  focal_alpha: 0.75  # Weight for positive class (melanoma)
+  
+  # Gradient clipping
   gradient_clip_norm: 1.0
+  
+  # Mixed precision (for GPU)
+  use_amp: true
 
-  # Optimizer settings
-  optimizer:
-    type: adam
-    betas: [0.9, 0.999]
-    eps: 1.0e-8
+# =============================================================================
+# Knowledge Distillation Configuration
+# =============================================================================
+# Focused search space per feedback:
+# T ∈ {1, 2}, ω ∈ {0.5, 0.9}
+# =============================================================================
+kd:
+  temperature: 2.0  # Options: 1.0, 2.0
+  alpha: 0.5        # Options: 0.5, 0.9
+  loss_type: kl_div  # KL divergence for soft labels
 
-  # Learning rate scheduler
-  scheduler:
-    type: step
-    step_size: 30
-    gamma: 0.1
+# =============================================================================
+# Quantization Configuration
+# =============================================================================
+quantization:
+  backend: qnnpack  # For mobile; use fbgemm for server
+  dtype: qint8
+  
+  # Only use QAT if PTQ degrades AUC > 0.02
+  use_qat: false
+  qat_epochs: 5
 
-  # Early stopping
-  early_stopping:
-    patience: 10
-    min_delta: 0.001
+# =============================================================================
+# Evaluation Configuration
+# =============================================================================
+evaluation:
+  # Clinical operating point
+  target_sensitivity: 0.95
+  
+  # Calibration
+  ece_bins: 15
+  
+  # Inference benchmarking
+  warmup_iterations: 10
+  benchmark_iterations: 100
+  
+  # Metrics to report
+  metrics:
+    - roc_auc
+    - pr_auc
+    - sensitivity
+    - specificity
+    - ppv
+    - npv
+    - ece
+    - specificity_at_95_sens
+    - ppv_at_95_sens
+    - npv_at_95_sens
 
-# Loss function
-loss:
-  type: cross_entropy
-  label_smoothing: 0.0
-
-# Evaluation metrics
-metrics:
-  - accuracy
-  - precision
-  - recall
-  - f1_score
-
-# Logging and saving
+# =============================================================================
+# Logging Configuration
+# =============================================================================
 logging:
+  log_dir: ./models/logs
+  tensorboard_dir: ./models/logs/tensorboard
   log_interval: 10
-  tensorboard_dir: ./logs/tensorboard
-  log_dir: ./logs
-
-checkpointing:
-  checkpoint_dir: ./checkpoints
-  save_freq: 5  # Save every N epochs
   save_best: true
-  monitor_metric: val_loss
-  monitor_mode: min
+  monitor_metric: val_roc_auc
+  monitor_mode: max
 
-# Hardware configuration
+# =============================================================================
+# Checkpointing
+# =============================================================================
+checkpointing:
+  checkpoint_dir: ./models/checkpoints
+  save_freq: 5
+  save_best: true
+
+# =============================================================================
+# W&B Configuration (optional)
+# =============================================================================
+wandb:
+  enabled: false
+  project: ham10000-melanoma-kd
+  entity: null
+  log_model: true
+
+# =============================================================================
+# Hardware Configuration
+# =============================================================================
 hardware:
-  device: cuda  # cuda, cpu, or mps
-  mixed_precision: false
+  device: auto  # auto, cuda, mps, cpu
+  mixed_precision: true
   multi_gpu: false

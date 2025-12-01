@@ -1,0 +1,225 @@
+{
+  "generated": "2025-12-01T15:54:14.323320",
+  "experiments": [
+    {
+      "name": "teacher_resnet18_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8030403172504957,
+        "precision": 0.34405940594059403,
+        "recall": 0.8081395348837209,
+        "f1": 0.4826388888888889,
+        "specificity": 0.8023862788963461,
+        "roc_auc": 0.9016657128487939,
+        "pr_auc": 0.5630245535919599,
+        "threshold_at_target_sens": 5.364253411244135e-06,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.19371618507263763,
+        "mce": 0.4122130943953625,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet34_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.813615333773959,
+        "precision": 0.35602094240837695,
+        "recall": 0.7906976744186046,
+        "f1": 0.49097472924187724,
+        "specificity": 0.8165548098434005,
+        "roc_auc": 0.8990643913774865,
+        "pr_auc": 0.5631964619319713,
+        "threshold_at_target_sens": 2.5820151917964936e-15,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.20301352438356254,
+        "mce": 0.4215386354562008,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet50_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.3536021150033047,
+        "precision": 0.1489547038327526,
+        "recall": 0.9941860465116279,
+        "f1": 0.2590909090909091,
+        "specificity": 0.2714392244593587,
+        "roc_auc": 0.8658368451173196,
+        "pr_auc": 0.3811937295760184,
+        "threshold_at_target_sens": 0.010949327610433102,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.5592341652264362,
+        "mce": 0.6531241504018178,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet101_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.783212161269002,
+        "precision": 0.3219178082191781,
+        "recall": 0.8197674418604651,
+        "f1": 0.46229508196721314,
+        "specificity": 0.7785234899328859,
+        "roc_auc": 0.8870246085011185,
+        "pr_auc": 0.47317856224747556,
+        "threshold_at_target_sens": 0.020746277645230293,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.21913692796872458,
+        "mce": 0.48339174191157025,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet152_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.7937871777924653,
+        "precision": 0.3372093023255814,
+        "recall": 0.8430232558139535,
+        "f1": 0.48172757475083056,
+        "specificity": 0.7874720357941835,
+        "roc_auc": 0.9004604339004214,
+        "pr_auc": 0.5477655343587836,
+        "threshold_at_target_sens": 5.786284784647933e-09,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.21780875635438618,
+        "mce": 0.8121976256370544,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T1.0_alpha0.5",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.9048248512888302,
+        "precision": 0.5608695652173913,
+        "recall": 0.75,
+        "f1": 0.6417910447761194,
+        "specificity": 0.9246830723340791,
+        "roc_auc": 0.9213533808508056,
+        "pr_auc": 0.6634238311584342,
+        "threshold_at_target_sens": 0.0001843140198616311,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.07213715367112739,
+        "mce": 0.3554589461397242,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T1.0_alpha0.9",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8982154659616656,
+        "precision": 0.5409090909090909,
+        "recall": 0.6918604651162791,
+        "f1": 0.6071428571428571,
+        "specificity": 0.9246830723340791,
+        "roc_auc": 0.9157908884379932,
+        "pr_auc": 0.6225831674038236,
+        "threshold_at_target_sens": 0.00031648395815864205,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.06373948017375326,
+        "mce": 0.28730173826217653,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T2.0_alpha0.5",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8486450760079313,
+        "precision": 0.4183381088825215,
+        "recall": 0.8488372093023255,
+        "f1": 0.5604606525911708,
+        "specificity": 0.84862043251305,
+        "roc_auc": 0.919961673863656,
+        "pr_auc": 0.6451377708140346,
+        "threshold_at_target_sens": 0.0004783305630553514,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.134026646919386,
+        "mce": 0.5960587348256793,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "student_T2.0_alpha0.9",
+      "type": "student",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8466622604097819,
+        "precision": 0.4142857142857143,
+        "recall": 0.8430232558139535,
+        "f1": 0.5555555555555556,
+        "specificity": 0.8471290082028337,
+        "roc_auc": 0.9186870263427154,
+        "pr_auc": 0.6097022487754736,
+        "threshold_at_target_sens": 0.0003521653707139194,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.12992782755006999,
+        "mce": 0.5186253119917477,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "quantized_dynamic",
+      "type": "quantization",
+      "completed": false,
+      "metrics": null
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "completed": 9,
+    "missing": [
+      "quantized_dynamic"
+    ]
+  }
+}

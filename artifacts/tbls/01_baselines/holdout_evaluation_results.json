@@ -1,0 +1,50 @@
+{
+  "evaluation_date": "2025-12-01T14:29:45.945363",
+  "holdout_set_size": 1513,
+  "models": {
+    "Teacher (EfficientNet-B2)": {
+      "metrics": {
+        "roc_auc": 0.9043927648578811,
+        "pr_auc": 0.6586633419417961,
+        "f1": 0.5925925925925926,
+        "accuracy": 0.8982154659616656,
+        "sensitivity": 0.6511627906976745,
+        "specificity": 0.9299030574198359,
+        "specificity_at_95_sens": 0.0,
+        "ppv_at_95_sens": 0.11368142762723067,
+        "npv_at_95_sens": 0.0,
+        "threshold_at_95_sens": 6.0455007769633085e-05,
+        "ece": 0.06365856272707061,
+        "mce": 0.4077574872970581
+      },
+      "deployment": {
+        "model_size_mb": 29.640613555908203,
+        "total_params": 7702403,
+        "avg_latency_ms": 9.497794606722891,
+        "throughput_fps": 105.28760005950886
+      }
+    },
+    "Student (MobileNetV3)": {
+      "metrics": {
+        "roc_auc": 0.920325858869639,
+        "pr_auc": 0.648631435080976,
+        "f1": 0.5443548387096774,
+        "accuracy": 0.8506278916060807,
+        "sensitivity": 0.7848837209302325,
+        "specificity": 0.8590604026845637,
+        "specificity_at_95_sens": 0.0,
+        "ppv_at_95_sens": 0.11368142762723067,
+        "npv_at_95_sens": 0.0,
+        "threshold_at_95_sens": 1.782696301688702e-07,
+        "ece": 0.20120598376782148,
+        "mce": 0.3644745632817474
+      },
+      "deployment": {
+        "model_size_mb": 5.840534210205078,
+        "total_params": 1518881,
+        "avg_latency_ms": 3.9465341542381793,
+        "throughput_fps": 253.38688604179467
+      }
+    }
+  }
+}

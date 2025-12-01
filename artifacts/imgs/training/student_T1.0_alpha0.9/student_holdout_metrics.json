@@ -1,0 +1,18 @@
+{
+  "accuracy": 0.8982154659616656,
+  "precision": 0.5409090909090909,
+  "recall": 0.6918604651162791,
+  "f1": 0.6071428571428571,
+  "specificity": 0.9246830723340791,
+  "roc_auc": 0.9157908884379932,
+  "pr_auc": 0.6225831674038236,
+  "threshold_at_target_sens": 0.00031648395815864205,
+  "specificity_at_target_sens": 0.0,
+  "ppv_at_target_sens": 0.11368142762723067,
+  "npv_at_target_sens": 0.0,
+  "ece": 0.06373948017375326,
+  "mce": 0.28730173826217653,
+  "n_samples": 1513,
+  "n_positive": 172,
+  "n_negative": 1341
+}
