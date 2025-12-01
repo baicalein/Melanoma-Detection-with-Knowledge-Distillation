@@ -238,25 +238,12 @@ quantize:
 	@echo "✓ Quantization complete"
 
 evaluate:
-	@echo "Evaluating all models on holdout set..."
-	$(PYTHON) -c "\
-from src.config import PROCESSED_DIR, CHECKPOINTS_DIR, get_device; \
-from src.data.dataset import HAM10000Dataset, get_eval_transforms; \
-from src.models.architectures import TeacherModel, StudentModel, load_teacher_checkpoint, load_student_checkpoint; \
-from src.evaluation.metrics import evaluate_model, compute_deployment_metrics; \
-import torch; \
-device = get_device(); \
-print(f'Device: {device}'); \
-holdout = torch.utils.data.DataLoader(HAM10000Dataset(PROCESSED_DIR/'holdout_data.csv', transform=get_eval_transforms()), batch_size=32); \
-print('\\n=== Teacher ==='); \
-teacher, _ = load_teacher_checkpoint(str(CHECKPOINTS_DIR/'teacher_resnet34_focal_best.pth'), device=device); \
-m = evaluate_model(teacher, holdout, device); \
-print(f'ROC-AUC: {m.roc_auc:.4f}, ECE: {m.ece:.4f}'); \
-print('\\n=== Student ==='); \
-student, _ = load_student_checkpoint(str(CHECKPOINTS_DIR/'student_T2_alpha0.5_best.pth'), device=device); \
-m = evaluate_model(student, holdout, device); \
-print(f'ROC-AUC: {m.roc_auc:.4f}, ECE: {m.ece:.4f}'); \
-"
+	@echo "============================================================================"
+	@echo "Evaluating all available models on holdout set..."
+	@echo "============================================================================"
+	$(PYTHON) scripts/evaluate_models.py \
+		--output artifacts/tbls/evaluation_results.csv \
+		--json-output artifacts/tbls/evaluation_results.json
 
 summary:
 	@echo "============================================================================"

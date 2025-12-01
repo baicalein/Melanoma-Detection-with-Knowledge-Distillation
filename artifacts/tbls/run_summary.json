@@ -1,6 +1,29 @@
 {
-  "generated": "2025-11-26T17:20:16.933817",
+  "generated": "2025-11-27T19:44:03.313926",
   "experiments": [
+    {
+      "name": "teacher_resnet18_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8030403172504957,
+        "precision": 0.34405940594059403,
+        "recall": 0.8081395348837209,
+        "f1": 0.4826388888888889,
+        "specificity": 0.8023862788963461,
+        "roc_auc": 0.9016657128487939,
+        "pr_auc": 0.5630245535919599,
+        "threshold_at_target_sens": 5.364253411244135e-06,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.19371618507263763,
+        "mce": 0.4122130943953625,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
     {
       "name": "teacher_resnet34_focal",
       "type": "teacher",
@@ -19,6 +42,75 @@
         "npv_at_target_sens": 0.0,
         "ece": 0.20301352438356254,
         "mce": 0.4215386354562008,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet50_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.8605419695968275,
+        "precision": 0.43252595155709345,
+        "recall": 0.7267441860465116,
+        "f1": 0.5422993492407809,
+        "specificity": 0.877703206562267,
+        "roc_auc": 0.894897941487609,
+        "pr_auc": 0.5464201589544686,
+        "threshold_at_target_sens": 0.003653732594102621,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.17404674316503435,
+        "mce": 0.4875534574190776,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet101_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.783212161269002,
+        "precision": 0.3219178082191781,
+        "recall": 0.8197674418604651,
+        "f1": 0.46229508196721314,
+        "specificity": 0.7785234899328859,
+        "roc_auc": 0.8870246085011185,
+        "pr_auc": 0.47317856224747556,
+        "threshold_at_target_sens": 0.020746277645230293,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.21913692796872458,
+        "mce": 0.48339174191157025,
+        "n_samples": 1513,
+        "n_positive": 172,
+        "n_negative": 1341
+      }
+    },
+    {
+      "name": "teacher_resnet152_focal",
+      "type": "teacher",
+      "completed": true,
+      "metrics": {
+        "accuracy": 0.7937871777924653,
+        "precision": 0.3372093023255814,
+        "recall": 0.8430232558139535,
+        "f1": 0.48172757475083056,
+        "specificity": 0.7874720357941835,
+        "roc_auc": 0.9004604339004214,
+        "pr_auc": 0.5477655343587836,
+        "threshold_at_target_sens": 5.786284784647933e-09,
+        "specificity_at_target_sens": 0.0,
+        "ppv_at_target_sens": 0.11368142762723067,
+        "npv_at_target_sens": 0.0,
+        "ece": 0.21780875635438618,
+        "mce": 0.8121976256370544,
         "n_samples": 1513,
         "n_positive": 172,
         "n_negative": 1341
@@ -124,8 +216,8 @@
     }
   ],
   "summary": {
-    "total": 6,
-    "completed": 5,
+    "total": 10,
+    "completed": 9,
     "missing": [
       "quantized_dynamic"
     ]

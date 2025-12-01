@@ -56,12 +56,17 @@ logger = logging.getLogger(__name__)
 def parse_args():
     parser = argparse.ArgumentParser(description="Train teacher model")
 
+    # Supported architectures
+    resnet_archs = ["resnet18", "resnet34", "resnet50", "resnet101", "resnet152"]
+    efficientnet_archs = [f"efficientnet_b{i}" for i in range(8)]  # B0-B7
+    all_archs = resnet_archs + efficientnet_archs
+
     # Model
     parser.add_argument(
         "--architecture",
         type=str,
         default="resnet34",
-        choices=["resnet18", "resnet34", "resnet50"],
+        choices=all_archs,
         help="Teacher architecture",
     )
     parser.add_argument("--dropout", type=float, default=0.3, help="Dropout rate")

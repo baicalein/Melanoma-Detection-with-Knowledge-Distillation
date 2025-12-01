@@ -56,7 +56,7 @@ data:
 # Teacher Model Configuration
 # =============================================================================
 teacher:
-  architecture: resnet34  # Options: resnet18, resnet34, resnet50
+  architecture: resnet50  # Options: resnet18, resnet34, resnet50, resnet101, resnet152, efficientnet_b0-b7
   pretrained: true
   num_classes: 1  # Binary classification (single logit)
   dropout: 0.3
