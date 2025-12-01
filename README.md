@@ -208,6 +208,24 @@ TODO: consider having this auto update from pandas
 | Student (MobileNetV3-Small) | ~10 | ~5 | TBD | TBD |
 | Student (INT8 Quantized) | ~3 | ~3 | TBD | TBD |
 
+### Sklearn Baselines
+
+Traditional ML baselines for comparison (using hand-crafted features):
+
+| Model | Features | ROC-AUC | PR-AUC |
+|-------|----------|---------|--------|
+| Logistic Regression | Combined | TBD | TBD |
+| Random Forest | Combined | TBD | TBD |
+| Gradient Boosting | Combined | TBD | TBD |
+| SVM (RBF) | Combined | TBD | TBD |
+
+Run baselines with:
+
+```bash
+make sklearn-baselines        # Full benchmark (all models, combined features)
+make sklearn-baselines-quick  # Quick test (logistic regression, 1000 samples)
+```
+
 ## Important Links
 
 - [Overleaf working document](https://www.overleaf.com/read/ycgbrjvyyqbx#5162eb)
@@ -242,4 +260,5 @@ make summary       # Generate experiment status report
 - **Knowledge distillation**: Temperature-scaled KD with focused hyperparameter search (T ∈ {1, 2}, α ∈ {0.5, 0.9})
 - **Comprehensive evaluation**: ROC-AUC, PR-AUC, sensitivity/specificity at 95% recall, ECE calibration
 - **INT8 quantization**: Post-training quantization for edge deployment
+- **Sklearn baselines**: Traditional ML benchmarks (Logistic Regression, Random Forest, GBM, SVM)
 - **Experiment tracking**: W&B integration for logging, `make summary` for experiment status

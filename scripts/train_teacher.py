@@ -88,6 +88,13 @@ def parse_args():
     # Data
     parser.add_argument("--recreate-splits", action="store_true", help="Recreate data splits")
     parser.add_argument("--weighted-sampling", action="store_true", help="Use weighted sampling")
+    parser.add_argument(
+        "--augmentation",
+        type=str,
+        default="standard",
+        choices=["light", "standard", "heavy", "dermoscopy"],
+        help="Augmentation level: light, standard, heavy, or dermoscopy (domain-specific)",
+    )
 
     # Other
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
@@ -138,9 +145,11 @@ def main():
         val_path,
         config=data_config,
         use_weighted_sampling=args.weighted_sampling,
+        augmentation_level=args.augmentation,
     )
 
     logger.info(f"Train samples: {len(train_loader.dataset)}")
+    logger.info(f"Augmentation level: {args.augmentation}")
     logger.info(f"Val samples: {len(val_loader.dataset)}")
 
     # Get positive weight for loss

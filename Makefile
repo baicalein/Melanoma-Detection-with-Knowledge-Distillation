@@ -4,7 +4,8 @@
 .PHONY: help install install-dev test lint format clean \
         data splits train-teacher train-teacher-single \
         train-resnet-teachers train-efficientnet-teachers \
-        train-student train-all quantize evaluate run-ablation check-all summary
+        train-student train-all quantize evaluate sklearn-baselines \
+        sklearn-baselines-quick run-ablation check-all summary
 
 # ============================================================================
 # Configuration
@@ -49,9 +50,11 @@ help:
 	@echo "  make run-ablation           - Run KD ablation (T∈{1,2}, α∈{0.5,0.9})"
 	@echo ""
 	@echo "EVALUATION:"
-	@echo "  make quantize         - Quantize student model to INT8"
-	@echo "  make evaluate         - Evaluate all models on holdout set"
-	@echo "  make summary          - Summarize all runs and show missing experiments"
+	@echo "  make quantize               - Quantize student model to INT8"
+	@echo "  make evaluate               - Evaluate all models on holdout set"
+	@echo "  make sklearn-baselines      - Run sklearn baseline benchmarks"
+	@echo "  make sklearn-baselines-quick - Quick sklearn test (1000 samples)"
+	@echo "  make summary                - Summarize all runs and show missing experiments"
 	@echo ""
 	@echo "DEVELOPMENT:"
 	@echo "  make test             - Run unit tests"
@@ -137,6 +140,8 @@ train-teacher-single: splits
 			--lr 1e-4 \
 			--loss focal \
 			--patience 10 \
+			--augmentation dermoscopy \
+			--weighted-sampling \
 			--seed $(SEED); \
 		echo "✓ Teacher training complete: $(TEACHER_ARCH)"; \
 	fi
@@ -159,6 +164,8 @@ train-teacher: splits
 				--lr 1e-4 \
 				--loss focal \
 				--patience 10 \
+				--augmentation dermoscopy \
+				--weighted-sampling \
 				--seed $(SEED) || exit 1; \
 			echo "✓ $$arch training complete"; \
 		fi; \
@@ -176,7 +183,7 @@ train-resnet-teachers: splits
 			echo "⏭  Skipping $$arch - checkpoint already exists"; \
 		else \
 			echo ">>> Training $$arch..."; \
-			$(PYTHON) scripts/train_teacher.py --architecture $$arch --epochs $(EPOCHS) --seed $(SEED) || exit 1; \
+			$(PYTHON) scripts/train_teacher.py --architecture $$arch --epochs $(EPOCHS) --augmentation dermoscopy --weighted-sampling --seed $(SEED) || exit 1; \
 		fi; \
 	done
 
@@ -188,7 +195,7 @@ train-efficientnet-teachers: splits
 			echo "⏭  Skipping $$arch - checkpoint already exists"; \
 		else \
 			echo ">>> Training $$arch..."; \
-			$(PYTHON) scripts/train_teacher.py --architecture $$arch --epochs $(EPOCHS) --seed $(SEED) || exit 1; \
+			$(PYTHON) scripts/train_teacher.py --architecture $$arch --epochs $(EPOCHS) --augmentation dermoscopy --weighted-sampling --seed $(SEED) || exit 1; \
 		fi; \
 	done
 
@@ -244,6 +251,31 @@ evaluate:
 	$(PYTHON) scripts/evaluate_models.py \
 		--output artifacts/tbls/evaluation_results.csv \
 		--json-output artifacts/tbls/evaluation_results.json
+
+sklearn-baselines:
+	@echo "============================================================================"
+	@echo "Running sklearn baseline benchmarks..."
+	@echo "============================================================================"
+	$(PYTHON) scripts/sklearn_baselines.py \
+		--features dermoscopy \
+		--model all \
+		--output artifacts/tbls/sklearn_baselines.csv
+
+sklearn-baselines-full:
+	@echo "============================================================================"
+	@echo "Running full sklearn baselines with shape features..."
+	@echo "============================================================================"
+	$(PYTHON) scripts/sklearn_baselines.py \
+		--features dermoscopy_full \
+		--model all \
+		--output artifacts/tbls/sklearn_baselines.csv
+
+sklearn-baselines-quick:
+	@echo "Running quick sklearn baselines (logistic regression only)..."
+	$(PYTHON) scripts/sklearn_baselines.py \
+		--features color \
+		--model logistic_regression \
+		--max-samples 1000
 
 summary:
 	@echo "============================================================================"
