@@ -19,12 +19,12 @@ from sklearn.metrics import auc, precision_recall_curve, roc_curve
 
 def load_sklearn_results(artifacts_dir: pathlib.Path) -> pd.DataFrame:
     """Load sklearn baseline results from artifact summaries.
-    
+
     Args:
         artifacts_dir: Path to the artifacts directory containing model results
-        
+
     Returns:
-        DataFrame with sklearn model results
+        DataFrame with sklearn model results.
 
     """
     results = []
@@ -53,12 +53,12 @@ def load_sklearn_results(artifacts_dir: pathlib.Path) -> pd.DataFrame:
 
 def load_teacher_checkpoints(checkpoints_dir: pathlib.Path) -> pd.DataFrame:
     """Load teacher model results from checkpoint metadata.
-    
+
     Args:
         checkpoints_dir: Path to the checkpoints directory
-        
+
     Returns:
-        DataFrame with teacher model results
+        DataFrame with teacher model results.
 
     """
     results = []
@@ -66,7 +66,11 @@ def load_teacher_checkpoints(checkpoints_dir: pathlib.Path) -> pd.DataFrame:
     for meta_file in checkpoints_dir.glob("teacher_*_meta.json"):
         try:
             data = json.loads(meta_file.read_text())
-            arch = meta_file.stem.replace("teacher_", "").replace("_focal_best_meta", "").replace("_best_meta", "")
+            arch = (
+                meta_file.stem.replace("teacher_", "")
+                .replace("_focal_best_meta", "")
+                .replace("_best_meta", "")
+            )
 
             metrics = data.get("metrics", {})
             results.append({
@@ -90,12 +94,12 @@ def load_teacher_checkpoints(checkpoints_dir: pathlib.Path) -> pd.DataFrame:
 
 def load_student_checkpoints(checkpoints_dir: pathlib.Path) -> pd.DataFrame:
     """Load student model results from checkpoint metadata.
-    
+
     Args:
         checkpoints_dir: Path to the checkpoints directory
-        
+
     Returns:
-        DataFrame with student model results
+        DataFrame with student model results.
 
     """
     results = []
@@ -127,13 +131,13 @@ def plot_teacher_comparison(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Visualize teacher model comparison.
-    
+
     Args:
         df_teachers: DataFrame with teacher model results
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -182,13 +186,13 @@ def plot_complete_model_comparison(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Create complete model comparison visualization.
-    
+
     Args:
         df_all: DataFrame with all model results
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     df_sorted = df_all.sort_values("ROC-AUC", ascending=True).reset_index(drop=True)
@@ -202,7 +206,10 @@ def plot_complete_model_comparison(
     }
     colors = [color_map.get(t, "#bdc3c7") for t in df_sorted["Type"]]
 
-    bars = ax.barh(range(len(df_sorted)), df_sorted["ROC-AUC"], color=colors, alpha=0.85, edgecolor='white')
+    bars = ax.barh(
+        range(len(df_sorted)), df_sorted["ROC-AUC"],
+        color=colors, alpha=0.85, edgecolor='white'
+    )
     ax.set_yticks(range(len(df_sorted)))
     ax.set_yticklabels(df_sorted["Model"], fontsize=10)
     ax.set_xlabel("ROC-AUC (Validation)", fontsize=12)
@@ -240,16 +247,16 @@ def plot_kd_effectiveness(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Visualize knowledge distillation effectiveness.
-    
+
     Args:
         teacher_auc: Teacher model ROC-AUC
         student_auc: Student model ROC-AUC
         teacher_params: Teacher parameters in millions
         student_params: Student parameters in millions
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     fig, axes = plt.subplots(1, 2, figsize=(12, 4))
@@ -295,15 +302,15 @@ def plot_threshold_curves(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Plot threshold tuning curves for a single model.
-    
+
     Args:
         y_true: Ground truth labels
         y_prob: Predicted probabilities
         model_name: Name of the model for title
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
@@ -329,7 +336,10 @@ def plot_threshold_curves(
     prec, rec, _ = precision_recall_curve(y_true, y_prob)
     pr_auc_val = auc(rec, prec)
     prevalence = y_true.mean()
-    ax_pr.axhline(y=prevalence, color='gray', linestyle='--', label=f'Baseline (prevalence={prevalence:.3f})')
+    ax_pr.axhline(
+        y=prevalence, color='gray', linestyle='--',
+        label=f'Baseline (prevalence={prevalence:.3f})'
+    )
     ax_pr.plot(rec, prec, color='#3498db', lw=2, label=f'PR-AUC = {pr_auc_val:.4f}')
 
     idx_95_pr = np.argmin(np.abs(rec[:-1] - 0.95))
@@ -399,13 +409,13 @@ def plot_latency_benchmarks(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Visualize latency benchmark results.
-    
+
     Args:
         df_latency: DataFrame with latency benchmark results
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
@@ -424,7 +434,7 @@ def plot_latency_benchmarks(
     colors = ['#2ecc71' if 'Student' in m else '#3498db' for m in df_latency['Model']]
     ax2.scatter(df_latency['Size (MB)'], df_latency['CPU Latency (ms)'],
                 c=colors, s=100, alpha=0.7, edgecolors='white', linewidth=2)
-    for i, row in df_latency.iterrows():
+    for _, row in df_latency.iterrows():
         ax2.annotate(row['Model'].split()[0], (row['Size (MB)'], row['CPU Latency (ms)']),
                     textcoords="offset points", xytext=(5, 5), fontsize=8)
     ax2.set_xlabel('Model Size (MB)', fontsize=12)
@@ -434,7 +444,10 @@ def plot_latency_benchmarks(
     # Plot 3: Throughput comparison
     ax3 = axes[2]
     colors = ['#2ecc71' if 'Student' in m else '#3498db' for m in df_latency['Model']]
-    bars = ax3.barh(df_latency['Model'], df_latency['CPU Throughput (FPS)'], color=colors, alpha=0.8)
+    bars = ax3.barh(
+        df_latency['Model'], df_latency['CPU Throughput (FPS)'],
+        color=colors, alpha=0.8
+    )
     ax3.set_xlabel('Throughput (FPS)', fontsize=12)
     ax3.set_title('CPU Throughput\n(Higher is Better)', fontsize=14)
     for bar, val in zip(bars, df_latency['CPU Throughput (FPS)']):
@@ -459,13 +472,13 @@ def plot_holdout_evaluation(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Visualize holdout set evaluation results.
-    
+
     Args:
         df_holdout: DataFrame with holdout evaluation results
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
@@ -506,8 +519,14 @@ def plot_holdout_evaluation(
     teacher_clinical = [df_holdout.iloc[0][m] for m in clinical_metrics]
     student_clinical = [df_holdout.iloc[1][m] for m in clinical_metrics]
 
-    bars1 = ax2.bar(x2 - width/2, teacher_clinical, width, label='Teacher', color='#3498db', alpha=0.8)
-    bars2 = ax2.bar(x2 + width/2, student_clinical, width, label='Student', color='#2ecc71', alpha=0.8)
+    bars1 = ax2.bar(
+        x2 - width/2, teacher_clinical, width,
+        label='Teacher', color='#3498db', alpha=0.8
+    )
+    bars2 = ax2.bar(
+        x2 + width/2, student_clinical, width,
+        label='Student', color='#2ecc71', alpha=0.8
+    )
 
     ax2.set_ylabel('Score')
     ax2.set_title('Clinical Metrics @ 95% Sensitivity')
@@ -532,8 +551,14 @@ def plot_holdout_evaluation(
     teacher_deploy = [df_holdout.iloc[0][m] for m in deployment_metrics]
     student_deploy = [df_holdout.iloc[1][m] for m in deployment_metrics]
 
-    bars1 = ax3.bar(x3 - width/2, teacher_deploy, width, label='Teacher', color='#3498db', alpha=0.8)
-    bars2 = ax3.bar(x3 + width/2, student_deploy, width, label='Student', color='#2ecc71', alpha=0.8)
+    bars1 = ax3.bar(
+        x3 - width/2, teacher_deploy, width,
+        label='Teacher', color='#3498db', alpha=0.8
+    )
+    bars2 = ax3.bar(
+        x3 + width/2, student_deploy, width,
+        label='Student', color='#2ecc71', alpha=0.8
+    )
 
     ax3.set_ylabel('Value')
     ax3.set_title('Deployment Metrics (Lower is Better)')

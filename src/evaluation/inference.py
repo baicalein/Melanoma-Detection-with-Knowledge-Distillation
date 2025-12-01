@@ -24,14 +24,14 @@ def load_model_from_checkpoint(
     device: str | torch.device = "cpu",
 ) -> nn.Module:
     """Load model weights from checkpoint.
-    
+
     Args:
         model: Initialized model architecture
         checkpoint_path: Path to checkpoint file
         device: Device to load model onto
-        
+
     Returns:
-        Model with loaded weights in eval mode
+        Model with loaded weights in eval mode.
 
     """
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
@@ -57,14 +57,14 @@ def get_prediction(
     device: str | torch.device,
 ) -> tuple[int, float]:
     """Get model prediction for a single image.
-    
+
     Args:
         model: Trained model in eval mode
         image_tensor: Preprocessed image tensor (C, H, W)
         device: Device to run inference on
-        
+
     Returns:
-        Tuple of (prediction, probability)
+        Tuple of (prediction, probability).
 
     """
     with torch.no_grad():
@@ -82,15 +82,15 @@ def get_all_predictions(
     device: str | torch.device,
 ) -> pd.DataFrame:
     """Get predictions from both teacher and student for all samples.
-    
+
     Args:
         teacher_model: Teacher model in eval mode
         student_model: Student model in eval mode
         dataset: Dataset with image tensors and labels
         device: Device to run inference on
-        
+
     Returns:
-        DataFrame with predictions and metadata
+        DataFrame with predictions and metadata.
 
     """
     results = []
@@ -127,12 +127,12 @@ def get_all_predictions(
 
 def load_original_image(image_path: str | pathlib.Path) -> Image.Image:
     """Load original image without transforms.
-    
+
     Args:
         image_path: Path to image file
-        
+
     Returns:
-        PIL Image in RGB format
+        PIL Image in RGB format.
 
     """
     return Image.open(image_path).convert("RGB")
@@ -149,7 +149,7 @@ def plot_prediction(
     ax: plt.Axes | None = None,
 ) -> plt.Axes:
     """Plot image with prediction results from both models.
-    
+
     Args:
         image: PIL Image to display
         true_label: Ground truth label (0 or 1)
@@ -159,13 +159,13 @@ def plot_prediction(
         student_prob: Student probability
         title: Optional title for the plot
         ax: Matplotlib axes to plot on
-        
+
     Returns:
-        Matplotlib axes
+        Matplotlib axes.
 
     """
     if ax is None:
-        fig, ax = plt.subplots(figsize=(6, 6))
+        _, ax = plt.subplots(figsize=(6, 6))
 
     ax.imshow(image)
     ax.axis('off')
@@ -202,16 +202,16 @@ def plot_prediction_grid(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Plot a grid of predictions matching a filter condition.
-    
+
     Args:
         predictions_df: DataFrame with prediction results
         filter_condition: String describing the filter (for title)
         title: Title for the figure
         n_samples: Maximum number of samples to show
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     samples = predictions_df.head(n_samples)
@@ -263,13 +263,13 @@ def plot_confidence_distribution(
     save_path: pathlib.Path | None = None,
 ) -> plt.Figure:
     """Plot confidence distributions for correct vs incorrect predictions.
-    
+
     Args:
         predictions_df: DataFrame with prediction results
         save_path: Optional path to save figure
-        
+
     Returns:
-        matplotlib Figure
+        matplotlib Figure.
 
     """
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -310,23 +310,26 @@ def plot_confidence_distribution(
     return fig
 
 
-def analyze_predictions(predictions_df: pd.DataFrame) -> dict:
+def analyze_predictions(predictions_df: pd.DataFrame) -> dict[str, float | int]:
     """Analyze prediction results and return summary statistics.
-    
+
     Args:
         predictions_df: DataFrame with prediction results
-        
+
     Returns:
-        Dictionary with analysis results
+        Dictionary with analysis results.
 
     """
     teacher_acc = predictions_df['teacher_correct'].mean()
     student_acc = predictions_df['student_correct'].mean()
 
-    both_correct = ((predictions_df['teacher_correct']) & (predictions_df['student_correct'])).sum()
-    both_wrong = ((~predictions_df['teacher_correct']) & (~predictions_df['student_correct'])).sum()
-    teacher_only = ((predictions_df['teacher_correct']) & (~predictions_df['student_correct'])).sum()
-    student_only = ((~predictions_df['teacher_correct']) & (predictions_df['student_correct'])).sum()
+    teacher_correct_mask = predictions_df['teacher_correct']
+    student_correct_mask = predictions_df['student_correct']
+
+    both_correct = (teacher_correct_mask & student_correct_mask).sum()
+    both_wrong = (~teacher_correct_mask & ~student_correct_mask).sum()
+    teacher_only = (teacher_correct_mask & ~student_correct_mask).sum()
+    student_only = (~teacher_correct_mask & student_correct_mask).sum()
 
     return {
         'teacher_accuracy': teacher_acc,
