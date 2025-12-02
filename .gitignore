@@ -252,3 +252,4 @@ models/*.safetensors
 models/*.h5
 models/logs/
 models/pretrained/
+models/exported/

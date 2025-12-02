@@ -39,6 +39,7 @@ This project implements knowledge distillation for melanoma detection on the HAM
     - [Sklearn Baselines](#sklearn-baselines)
   - [Important Links](#important-links)
   - [Contact](#contact)
+  - [Fixing Git](#fixing-git)
   - [Development Commands](#development-commands)
   - [Changelog](#changelog)
 
@@ -320,6 +321,37 @@ make sklearn-baselines-quick  # Quick test (logistic regression, 1000 samples)
 Ryan Healy (rah5ff) and Angie Yoon
 
 ---
+
+## Fixing Git
+
+Downloading this many models and datasets, it is really easy to accidentally add something to to the commit history that isn't supposed to be there.
+
+1) list large files
+
+```bash
+# check size total repo
+du -h .git
+
+# check large files 
+git rev-list --objects --all \
+  | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+  | awk '$1=="blob" {size=$3; sha=$2; $1=$2=$3=""; path=substr($0,4); printf "%.2fMB\t%s\t%s\n", size/1024/1024, sha, path}' \
+  | sort -nr \
+  | head -n 50
+
+# filter the repo
+# install if needed brew install filter-repo
+git filter-repo --strip-blobs-bigger-than 5M
+
+
+# Cleanup and force-push (coordinate with collaborators)
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+git push --force origin --all
+git push --force origin --tags
+
+
+```
 
 ## Development Commands
 
