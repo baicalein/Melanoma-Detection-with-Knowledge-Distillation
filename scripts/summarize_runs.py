@@ -38,8 +38,10 @@ logger = logging.getLogger(__name__)
 # Expected Experiments (based on project requirements)
 # ============================================================================
 
-# Teacher architectures to evaluate (all available ResNet models)
-TEACHER_ARCHITECTURES = ["resnet18", "resnet34", "resnet50", "resnet101", "resnet152"]
+# Teacher architectures to evaluate (ResNet + EfficientNet families)
+RESNET_ARCHS = ["resnet18", "resnet34", "resnet50", "resnet101", "resnet152"]
+EFFICIENTNET_ARCHS = [f"efficientnet_b{i}" for i in range(8)]
+TEACHER_ARCHITECTURES = RESNET_ARCHS + EFFICIENTNET_ARCHS
 TEACHER_LOSS_TYPES = ["focal"]
 
 # KD hyperparameter grid (focused search per feedback)

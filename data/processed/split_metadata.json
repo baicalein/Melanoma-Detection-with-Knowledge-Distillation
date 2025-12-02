@@ -1,0 +1,15 @@
+{
+  "random_seed": 42,
+  "train_ratio": 0.7,
+  "val_ratio": 0.15,
+  "holdout_ratio": 0.15,
+  "train_n": 6998,
+  "val_n": 1504,
+  "holdout_n": 1513,
+  "train_n_lesions": 5228,
+  "val_n_lesions": 1121,
+  "holdout_n_lesions": 1121,
+  "train_melanoma_n": 774,
+  "val_melanoma_n": 167,
+  "holdout_melanoma_n": 172
+}

@@ -21,8 +21,25 @@ This project implements knowledge distillation for melanoma detection on the HAM
   - [Configuration](#configuration)
   - [Results](#results)
     - [Deployment Metrics](#deployment-metrics)
+      - [Complete Model Comparison](#complete-model-comparison)
+      - [Teacher Model Comparison](#teacher-model-comparison)
+      - [Knowledge Distillation Effectiveness](#knowledge-distillation-effectiveness)
+      - [Latency Benchmarks](#latency-benchmarks)
+      - [Holdout Set Evaluation](#holdout-set-evaluation)
+      - [Teacher Threshold Curves](#teacher-threshold-curves)
+      - [Student Threshold Curves](#student-threshold-curves)
+      - [Training Curves (Student T=1, α=0.5)](#training-curves-student-t1-α05)
+      - [ROC \& PR Curves](#roc--pr-curves)
+      - [Reliability Diagram (Calibration)](#reliability-diagram-calibration)
+      - [Teacher vs Student Comparison](#teacher-vs-student-comparison)
+      - [Teacher vs Student Predictions](#teacher-vs-student-predictions)
+      - [Confidence Distribution](#confidence-distribution)
+      - [Challenging Cases](#challenging-cases)
+      - [High Confidence Errors](#high-confidence-errors)
+    - [Sklearn Baselines](#sklearn-baselines)
   - [Important Links](#important-links)
   - [Contact](#contact)
+  - [Fixing Git](#fixing-git)
   - [Development Commands](#development-commands)
   - [Changelog](#changelog)
 
@@ -193,20 +210,88 @@ from src.config import (
 
 ### Deployment Metrics
 
-TODO: fill these in
-TODO: consider having this auto update from pandas
-
 | Model | Size (MB) | Latency (ms) | ROC-AUC | ECE |
 |-------|-----------|--------------|---------|-----|
-| ResNet-18 | ~45 | ~8 | TBD | TBD |
-| ResNet-34 | ~85 | ~15 | TBD | TBD |
-| ResNet-50 | ~98 | ~20 | TBD | TBD |
-| ResNet-101 | ~171 | ~35 | TBD | TBD |
-| ResNet-152 | ~230 | ~50 | TBD | TBD |
-| EfficientNet-B0 | ~21 | ~10 | TBD | TBD |
-| EfficientNet-B7 | ~256 | ~80 | TBD | TBD |
-| Student (MobileNetV3-Small) | ~10 | ~5 | TBD | TBD |
-| Student (INT8 Quantized) | ~3 | ~3 | TBD | TBD |
+| ResNet-18 | 42.7 | 1.9 | 0.900 | 0.195 |
+| ResNet-34 | 81.3 | 3.4 | 0.898 | 0.205 |
+| ResNet-50 | 89.9 | 4.9 | 0.866 | 0.559 |
+| ResNet-101 | 162.5 | 9.0 | 0.886 | 0.221 |
+| ResNet-152 | 222.4 | 14.4 | 0.900 | 0.219 |
+| EfficientNet-B0 | 15.5 | 6.0 | 0.904 | 0.157 |
+| EfficientNet-B1 | 25.1 | 8.6 | **0.919** | 0.174 |
+| EfficientNet-B2 | 29.6 | 8.9 | 0.904 | **0.064** |
+| EfficientNet-B3 | 41.1 | 9.7 | 0.908 | 0.076 |
+| EfficientNet-B4 | 67.4 | 11.9 | 0.906 | 0.115 |
+| EfficientNet-B5 | 108.8 | 14.8 | 0.899 | 0.235 |
+| EfficientNet-B6 | 156.3 | 17.2 | 0.890 | 0.145 |
+| EfficientNet-B7 | 244.5 | 20.4 | 0.917 | 0.169 |
+| Student (T=1, α=0.5) | ~9.1 | ~3 | **0.921** | 0.072 |
+| Student (T=2, α=0.5) | ~9.1 | ~3 | 0.920 | 0.134 |
+
+<details>
+<summary><b>📊 Model Comparison Charts (click to expand)</b></summary>
+
+#### Complete Model Comparison
+![Complete Model Comparison](artifacts/imgs/01_baselines/complete_model_comparison.png)
+
+#### Teacher Model Comparison
+![Teacher Comparison](artifacts/imgs/01_baselines/teacher_comparison.png)
+
+#### Knowledge Distillation Effectiveness
+![KD Effectiveness](artifacts/imgs/01_baselines/kd_effectiveness.png)
+
+#### Latency Benchmarks
+![Latency Benchmarks](artifacts/imgs/01_baselines/latency_benchmarks.png)
+
+</details>
+
+<details>
+<summary><b>📈 ROC & PR Curves (click to expand)</b></summary>
+
+#### Holdout Set Evaluation
+![Holdout Evaluation](artifacts/imgs/01_baselines/holdout_evaluation.png)
+
+#### Teacher Threshold Curves
+![Teacher Threshold Curves](artifacts/imgs/01_baselines/teacher_threshold_curves.png)
+
+#### Student Threshold Curves
+![Student Threshold Curves](artifacts/imgs/01_baselines/student_threshold_curves.png)
+
+</details>
+
+<details>
+<summary><b>🎯 Best Student Model Training (click to expand)</b></summary>
+
+#### Training Curves (Student T=1, α=0.5)
+![Training Curves](artifacts/imgs/training/student_T1.0_alpha0.5/training_curves.png)
+
+#### ROC & PR Curves
+![ROC PR Curves](artifacts/imgs/training/student_T1.0_alpha0.5/roc_pr_curves.png)
+
+#### Reliability Diagram (Calibration)
+![Reliability Diagram](artifacts/imgs/training/student_T1.0_alpha0.5/reliability_diagram.png)
+
+#### Teacher vs Student Comparison
+![Model Comparison](artifacts/imgs/training/student_T1.0_alpha0.5/model_comparison.png)
+
+</details>
+
+<details>
+<summary><b>🔬 Inference Analysis (click to expand)</b></summary>
+
+#### Teacher vs Student Predictions
+![Teacher vs Student](artifacts/imgs/02_inference/teacher_vs_student.png)
+
+#### Confidence Distribution
+![Confidence Distribution](artifacts/imgs/02_inference/confidence_distribution.png)
+
+#### Challenging Cases
+![Challenging Cases](artifacts/imgs/02_inference/challenging_cases.png)
+
+#### High Confidence Errors
+![High Confidence Errors](artifacts/imgs/02_inference/high_confidence_errors.png)
+
+</details>
 
 ### Sklearn Baselines
 
@@ -214,10 +299,10 @@ Traditional ML baselines for comparison (using hand-crafted features):
 
 | Model | Features | ROC-AUC | PR-AUC |
 |-------|----------|---------|--------|
-| Logistic Regression | Combined | TBD | TBD |
-| Random Forest | Combined | TBD | TBD |
-| Gradient Boosting | Combined | TBD | TBD |
-| SVM (RBF) | Combined | TBD | TBD |
+| Random Forest | Combined | 0.853 | 0.392 |
+| Gradient Boosting | Combined | 0.845 | 0.366 |
+| SVM (RBF) | Combined | 0.824 | 0.336 |
+| Logistic Regression | Combined | 0.797 | 0.289 |
 
 Run baselines with:
 
@@ -236,6 +321,37 @@ make sklearn-baselines-quick  # Quick test (logistic regression, 1000 samples)
 Ryan Healy (rah5ff) and Angie Yoon
 
 ---
+
+## Fixing Git
+
+Downloading this many models and datasets, it is really easy to accidentally add something to to the commit history that isn't supposed to be there.
+
+1) list large files
+
+```bash
+# check size total repo
+du -h .git
+
+# check large files 
+git rev-list --objects --all \
+  | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+  | awk '$1=="blob" {size=$3; sha=$2; $1=$2=$3=""; path=substr($0,4); printf "%.2fMB\t%s\t%s\n", size/1024/1024, sha, path}' \
+  | sort -nr \
+  | head -n 50
+
+# filter the repo
+# install if needed brew install filter-repo
+git filter-repo --strip-blobs-bigger-than 5M
+
+
+# Cleanup and force-push (coordinate with collaborators)
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+git push --force origin --all
+git push --force origin --tags
+
+
+```
 
 ## Development Commands
 

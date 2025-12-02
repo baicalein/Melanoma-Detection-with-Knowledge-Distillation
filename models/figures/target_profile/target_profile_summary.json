@@ -1,0 +1,79 @@
+{
+  "target_counts": {
+    "0": 8902,
+    "1": 1113
+  },
+  "target_props": {
+    "0": 0.8889,
+    "1": 0.1111
+  },
+  "lesion_counts_top10": {
+    "Melanocytic nevi": 6705,
+    "Melanoma": 1113,
+    "Benign keratosis-like lesions": 1099,
+    "Basal cell carcinoma": 514,
+    "Actinic keratoses": 327,
+    "Vascular lesions": 142,
+    "Dermatofibroma": 115
+  },
+  "age_stats": {
+    "overall": {
+      "count": 9958,
+      "mean": 51.863828077927295,
+      "std": 16.96776166198128,
+      "min": 0.0,
+      "max": 85.0
+    },
+    "by_target": {
+      "count": {
+        "0": 8847.0,
+        "1": 1111.0
+      },
+      "mean": {
+        "0": 50.756753701819825,
+        "1": 60.67956795679568
+      },
+      "std": {
+        "0": 16.856976173435427,
+        "1": 15.189847433019064
+      },
+      "min": {
+        "0": 0.0,
+        "1": 5.0
+      },
+      "max": {
+        "0": 85.0,
+        "1": 85.0
+      }
+    }
+  },
+  "sex_counts": {
+    "male": 5406,
+    "female": 4552,
+    "unknown": 57
+  },
+  "sex_by_target": {
+    "0": {
+      "female": 4128,
+      "male": 4717,
+      "unknown": 57
+    },
+    "1": {
+      "female": 424,
+      "male": 689,
+      "unknown": 0
+    }
+  },
+  "localization_top": {
+    "back": 2192,
+    "lower extremity": 2077,
+    "trunk": 1404,
+    "upper extremity": 1118,
+    "abdomen": 1022,
+    "face": 745,
+    "chest": 407,
+    "foot": 319,
+    "unknown": 234,
+    "neck": 168
+  }
+}

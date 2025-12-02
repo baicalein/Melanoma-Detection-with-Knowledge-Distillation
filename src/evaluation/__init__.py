@@ -3,6 +3,7 @@
 from src.evaluation.inference import (
     analyze_predictions,
     get_all_predictions,
+    get_model_predictions,
     get_prediction,
     load_model_from_checkpoint,
     load_original_image,
@@ -37,6 +38,7 @@ __all__ = [
     "load_model_from_checkpoint",
     "get_prediction",
     "get_all_predictions",
+    "get_model_predictions",
     "load_original_image",
     "plot_prediction",
     "plot_prediction_grid",

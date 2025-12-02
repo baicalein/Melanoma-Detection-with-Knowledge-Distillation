@@ -18,6 +18,39 @@ import torch.nn as nn
 from PIL import Image
 
 
+def get_model_predictions(
+    model: nn.Module,
+    data_loader: torch.utils.data.DataLoader,
+    device: str | torch.device = "cpu",
+) -> tuple[np.ndarray, np.ndarray]:
+    """Get predictions from a model on a dataloader.
+
+    Args:
+        model: PyTorch model in eval mode
+        data_loader: DataLoader with (images, targets)
+        device: Device for inference
+
+    Returns:
+        Tuple of (true_labels, predicted_probabilities).
+
+    """
+    model = model.to(device)
+    model.eval()
+
+    all_targets = []
+    all_probs = []
+
+    with torch.no_grad():
+        for images, targets in data_loader:
+            images = images.to(device)
+            logits = model(images)
+            probs = torch.sigmoid(logits).cpu().numpy()
+            all_probs.append(probs)
+            all_targets.append(targets.numpy())
+
+    return np.concatenate(all_targets), np.concatenate(all_probs)
+
+
 def load_model_from_checkpoint(
     model: nn.Module,
     checkpoint_path: pathlib.Path,
