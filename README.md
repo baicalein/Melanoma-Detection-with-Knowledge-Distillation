@@ -208,6 +208,15 @@ from src.config import (
 
 ## Results
 
+### Evaluation Metrics
+
+| Metric | Description |
+|--------|-------------|
+| **ROC-AUC** | Area under the Receiver Operating Characteristic curve. Measures the model's ability to distinguish between melanoma and benign lesions across all classification thresholds. Higher is better (1.0 = perfect). |
+| **PR-AUC** | Area under the Precision-Recall curve. More informative than ROC-AUC for imbalanced datasets like ours (11.4% melanoma). Focuses on the minority class (melanoma) performance. Higher is better. |
+| **ECE** | Expected Calibration Error. Measures how well predicted probabilities match actual outcomes. An ECE of 0.10 means predictions are off by ~10% on average. Lower is better (0 = perfectly calibrated). |
+| **F1 Score** | Harmonic mean of precision and recall. Balances false positives and false negatives. |
+
 ### Deployment Metrics
 
 | Model | Size (MB) | Latency (ms) | ROC-AUC | ECE |
@@ -227,6 +236,60 @@ from src.config import (
 | EfficientNet-B7 | 244.5 | 20.4 | 0.917 | 0.169 |
 | Student (T=1, α=0.5) | ~9.1 | ~3 | **0.921** | 0.072 |
 | Student (T=2, α=0.5) | ~9.1 | ~3 | 0.920 | 0.134 |
+
+### Knowledge Distillation Ablation Study
+
+We conducted an ablation study to understand the impact of temperature (T) and alpha (α) on student model performance. Temperature controls the "softness" of teacher predictions, while alpha balances the weight between hard labels and soft teacher knowledge.
+
+| Configuration | ROC-AUC | PR-AUC | F1 Score | Recall | Precision | Accuracy | ECE |
+|--------------|---------|--------|----------|--------|-----------|----------|-----|
+| **T=1.0, α=0.5** | **0.9214** | **0.6634** | **0.6418** | 0.750 | **0.561** | **0.905** | 0.072 |
+| T=1.0, α=0.9 | 0.9158 | 0.6226 | 0.6071 | 0.692 | 0.541 | 0.898 | **0.064** |
+| T=2.0, α=0.5 | 0.9200 | 0.6451 | 0.5605 | **0.849** | 0.418 | 0.849 | 0.134 |
+| T=2.0, α=0.9 | 0.9187 | 0.6097 | 0.5556 | 0.843 | 0.414 | 0.847 | 0.130 |
+
+**Key Findings:**
+
+- **Best Overall: T=1.0, α=0.5** — Achieves highest ROC-AUC (0.9214), F1 (0.6418), and best precision-recall balance
+- **Temperature Effect**: T=2.0 increases recall (catches more melanomas) but significantly reduces precision (more false positives)
+- **Alpha Effect**: α=0.5 (balanced hard/soft labels) outperforms α=0.9 (mostly soft labels) on discriminative metrics
+- **Best Calibration: T=1.0, α=0.9** — Lowest ECE (0.064) but trades off discriminative performance
+
+<details>
+<summary><b>🔬 Ablation Visualizations (click to expand)</b></summary>
+
+#### KD Ablation Heatmaps
+![KD Ablation Heatmaps](artifacts/imgs/02_inference/kd_ablation_heatmaps.png)
+
+#### KD Configuration Comparison
+![KD Ablation Comparison](artifacts/imgs/02_inference/kd_ablation_comparison.png)
+
+</details>
+
+### Teacher vs Student Error Analysis
+
+On the holdout set (1,513 images, 11.4% melanoma prevalence):
+
+| Metric | Value |
+|--------|-------|
+| Total samples | 1,513 |
+| Models agree | 1,331 (88.0%) |
+| Models disagree | 182 (12.0%) |
+| Teacher correct | 1,307 (86.4%) |
+| Student correct | 1,369 (90.5%) |
+| Both correct | 1,247 (82.4%) |
+| **Both wrong** | **84 (5.6%)** |
+
+**Disagreement Analysis:**
+
+When models disagree, the **Student is right 67% of the time** (122 vs 60 cases).
+
+| Error Type | Count | Description |
+|------------|-------|-------------|
+| Both miss melanoma (FN) | 29 | ⚠️ Dangerous cases — melanomas both models fail to detect |
+| Both false alarm (FP) | 55 | Benign lesions incorrectly flagged by both |
+
+The 29 shared false negatives (~17% of melanomas) represent **hard-to-classify cases** with atypical visual features that neither model can detect. These edge cases may require additional data augmentation, ensemble approaches, or human expert review.
 
 <details>
 <summary><b>📊 Model Comparison Charts (click to expand)</b></summary>
