@@ -11,7 +11,6 @@ This project implements knowledge distillation for melanoma detection on the HAM
 
 - [Melanoma Detection with Knowledge Distillation](#melanoma-detection-with-knowledge-distillation)
   - [Table of Contents](#table-of-contents)
-  - [Project Structure](#project-structure)
   - [Installation](#installation)
   - [Dataset Setup](#dataset-setup)
   - [Reproducing Results](#reproducing-results)
@@ -20,7 +19,12 @@ This project implements knowledge distillation for melanoma detection on the HAM
     - [Step 3: Quantize Student Model](#step-3-quantize-student-model)
   - [Configuration](#configuration)
   - [Results](#results)
+    - [Evaluation Metrics](#evaluation-metrics)
     - [Deployment Metrics](#deployment-metrics)
+    - [Knowledge Distillation Ablation Study](#knowledge-distillation-ablation-study)
+      - [KD Ablation Heatmaps](#kd-ablation-heatmaps)
+      - [KD Configuration Comparison](#kd-configuration-comparison)
+    - [Teacher vs Student Error Analysis](#teacher-vs-student-error-analysis)
       - [Complete Model Comparison](#complete-model-comparison)
       - [Teacher Model Comparison](#teacher-model-comparison)
       - [Knowledge Distillation Effectiveness](#knowledge-distillation-effectiveness)
@@ -42,43 +46,6 @@ This project implements knowledge distillation for melanoma detection on the HAM
   - [Fixing Git](#fixing-git)
   - [Development Commands](#development-commands)
   - [Changelog](#changelog)
-
-## Project Structure
-
-```
-├── src/
-│   ├── config.py              # Centralized configuration
-│   ├── data/
-│   │   ├── dataset.py         # HAM10000 Dataset class
-│   │   └── splits.py          # Lesion-aware stratified splitting
-│   ├── models/
-│   │   ├── architectures.py   # Teacher (ResNet) & Student (MobileNetV3)
-│   │   └── kd_loss.py         # Knowledge distillation & focal loss
-│   ├── training/
-│   │   └── trainer.py         # Training loops with early stopping
-│   ├── evaluation/
-│   │   ├── metrics.py         # ROC-AUC, PR-AUC, ECE, calibration
-│   │   └── quantization.py    # INT8 quantization utilities
-│   └── plotting/
-│       ├── eda.py             # EDA visualizations
-│       └── training_plots.py  # Training curves, reliability diagrams
-├── scripts/
-│   ├── train_teacher.py       # Train teacher model
-│   ├── train_student.py       # Train student with KD
-│   └── quantize_model.py      # Quantize and evaluate
-├── notebooks/
-│   ├── 00_eda.ipynb           # Exploratory data analysis
-│   └── 01_benchmarks.ipynb    # Model benchmarks
-├── data/
-│   ├── raw/ham_1000_archive/  # Raw HAM10000 images
-│   └── processed/             # Processed splits (train/val/holdout)
-├── models/
-│   ├── checkpoints/           # Saved model weights
-│   └── logs/                  # Training logs
-└── artifacts/
-    ├── imgs/                  # Generated figures
-    └── tbls/                  # Generated tables
-```
 
 ## Installation
 
@@ -105,11 +72,8 @@ python -c "from src import set_seed; print('OK')"
 3. Run data preprocessing:
 
 ```bash
-# Create labeled CSV with lesion types and binary targets
-python -c "from src.data.build_data import create_base_df; create_base_df()"
-
-# Create lesion-aware train/val/holdout splits (70/15/15)
-python -c "from src.data.splits import load_or_create_splits; load_or_create_splits(force_recreate=True)"
+# make recommended
+make data
 ```
 
 Expected output:
@@ -123,43 +87,6 @@ Expected output:
 ## Reproducing Results
 
 ### Step 1: Train Teacher Model
-
-```bash
-python scripts/train_teacher.py \
-    --architecture resnet34 \
-    --epochs 50 \
-    --batch-size 32 \
-    --lr 1e-4 \
-    --loss focal \
-    --patience 10 \
-    --seed 42
-```
-
-Expected outputs:
-
-- `models/checkpoints/teacher_resnet34_focal_best.pth`
-- `artifacts/imgs/training/teacher_resnet34_focal/` (training curves, reliability diagram)
-
-### Step 2: Train Student with Knowledge Distillation
-
-Run with recommended hyperparameters (T=2, α=0.5):
-
-```bash
-python scripts/train_student.py \
-    --teacher-ckpt models/checkpoints/teacher_resnet34_focal_best.pth \
-    --teacher-arch resnet34 \
-    --student-arch mobilenet_v3_small \
-    --temperature 2 \
-    --alpha 0.5 \
-    --epochs 50 \
-    --seed 42
-```
-
-For ablation studies, also run:
-
-- T=1, α=0.5
-- T=2, α=0.9
-- T=1, α=0.9
 
 **Teacher Architecture Comparison:**
 
@@ -179,6 +106,47 @@ make train-teacher-single TEACHER_ARCH=resnet50
 
 Or use `make summary` to see which experiments are complete and get commands for missing ones.
 
+<details><summary>specific train script</summary>
+
+```bash
+python scripts/train_teacher.py \
+    #--architecture resnet34 \
+    --epochs 50 \
+    --batch-size 32 \
+    --lr 1e-4 \
+    --loss focal \
+    --patience 10 \
+    --seed 42
+```
+
+</details>
+
+### Step 2: Train Student with Knowledge Distillation
+
+- make sure to run the ablation study first to choose the right hyper parameters for the student
+
+our ablations were roughly:
+
+- T=1, α=0.5
+- T=2, α=0.9
+- T=1, α=0.9
+
+see results for more
+
+<details><summary>expand for script</summary>
+```bash
+python scripts/train_student.py \
+    #--teacher-ckpt models/checkpoints/teacher_resnet34_focal_best.pth \
+    #--teacher-arch resnet34 \
+    --student-arch mobilenet_v3_small \
+    --temperature 2 \
+    --alpha 0.5 \
+    --epochs 50 \
+    --seed 42
+```
+
+</details>
+
 ### Step 3: Quantize Student Model
 
 ```bash
@@ -186,11 +154,6 @@ python scripts/quantize_model.py \
     --model-ckpt models/checkpoints/student_T2_alpha0.5_best.pth \
     --method dynamic
 ```
-
-Expected outputs:
-
-- `models/checkpoints/quantized_dynamic_quantized.pth`
-- `artifacts/imgs/quantization/` (deployment comparison plots)
 
 ## Configuration
 
@@ -259,9 +222,11 @@ We conducted an ablation study to understand the impact of temperature (T) and a
 <summary><b>🔬 Ablation Visualizations (click to expand)</b></summary>
 
 #### KD Ablation Heatmaps
+
 ![KD Ablation Heatmaps](artifacts/imgs/02_inference/kd_ablation_heatmaps.png)
 
 #### KD Configuration Comparison
+
 ![KD Ablation Comparison](artifacts/imgs/02_inference/kd_ablation_comparison.png)
 
 </details>
@@ -295,15 +260,19 @@ The 29 shared false negatives (~17% of melanomas) represent **hard-to-classify c
 <summary><b>📊 Model Comparison Charts (click to expand)</b></summary>
 
 #### Complete Model Comparison
+
 ![Complete Model Comparison](artifacts/imgs/01_baselines/complete_model_comparison.png)
 
 #### Teacher Model Comparison
+
 ![Teacher Comparison](artifacts/imgs/01_baselines/teacher_comparison.png)
 
 #### Knowledge Distillation Effectiveness
+
 ![KD Effectiveness](artifacts/imgs/01_baselines/kd_effectiveness.png)
 
 #### Latency Benchmarks
+
 ![Latency Benchmarks](artifacts/imgs/01_baselines/latency_benchmarks.png)
 
 </details>
@@ -312,12 +281,15 @@ The 29 shared false negatives (~17% of melanomas) represent **hard-to-classify c
 <summary><b>📈 ROC & PR Curves (click to expand)</b></summary>
 
 #### Holdout Set Evaluation
+
 ![Holdout Evaluation](artifacts/imgs/01_baselines/holdout_evaluation.png)
 
 #### Teacher Threshold Curves
+
 ![Teacher Threshold Curves](artifacts/imgs/01_baselines/teacher_threshold_curves.png)
 
 #### Student Threshold Curves
+
 ![Student Threshold Curves](artifacts/imgs/01_baselines/student_threshold_curves.png)
 
 </details>
@@ -326,15 +298,19 @@ The 29 shared false negatives (~17% of melanomas) represent **hard-to-classify c
 <summary><b>🎯 Best Student Model Training (click to expand)</b></summary>
 
 #### Training Curves (Student T=1, α=0.5)
+
 ![Training Curves](artifacts/imgs/training/student_T1.0_alpha0.5/training_curves.png)
 
 #### ROC & PR Curves
+
 ![ROC PR Curves](artifacts/imgs/training/student_T1.0_alpha0.5/roc_pr_curves.png)
 
 #### Reliability Diagram (Calibration)
+
 ![Reliability Diagram](artifacts/imgs/training/student_T1.0_alpha0.5/reliability_diagram.png)
 
 #### Teacher vs Student Comparison
+
 ![Model Comparison](artifacts/imgs/training/student_T1.0_alpha0.5/model_comparison.png)
 
 </details>
@@ -343,15 +319,19 @@ The 29 shared false negatives (~17% of melanomas) represent **hard-to-classify c
 <summary><b>🔬 Inference Analysis (click to expand)</b></summary>
 
 #### Teacher vs Student Predictions
+
 ![Teacher vs Student](artifacts/imgs/02_inference/teacher_vs_student.png)
 
 #### Confidence Distribution
+
 ![Confidence Distribution](artifacts/imgs/02_inference/confidence_distribution.png)
 
 #### Challenging Cases
+
 ![Challenging Cases](artifacts/imgs/02_inference/challenging_cases.png)
 
 #### High Confidence Errors
+
 ![High Confidence Errors](artifacts/imgs/02_inference/high_confidence_errors.png)
 
 </details>
