@@ -17,7 +17,14 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from PIL import Image
-from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
+from sklearn.metrics import (
+    average_precision_score,
+    confusion_matrix,
+    f1_score,
+    precision_recall_curve,
+    roc_auc_score,
+    roc_curve,
+)
 from tqdm import tqdm
 
 from src.config import RAW_DIR
@@ -515,3 +522,231 @@ def predict_single_image(
         "student_pred": "Melanoma" if student_prob > 0.5 else "Benign",
         "agreement": (teacher_prob > 0.5) == (student_prob > 0.5),
     }
+
+
+def plot_confusion_matrices(
+    comparison_df: pd.DataFrame,
+    save_path: Optional[pathlib.Path] = None,
+) -> plt.Figure:
+    """Plot confusion matrices for both Teacher and Student models.
+
+    Args:
+        comparison_df: DataFrame from build_comparison_dataframe
+        save_path: Optional path to save the figure
+
+    Returns:
+        matplotlib Figure.
+    """
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+    # Define model info with full names and colors
+    models = [
+        ("Teacher (EfficientNet-B1)", "teacher_pred", "Greens"),
+        ("Student (MobileNetV3)", "student_pred", "Purples"),
+    ]
+
+    for ax, (model_name, pred_col, cmap) in zip(axes, models):
+        cm = confusion_matrix(comparison_df["true_label"], comparison_df[pred_col])
+
+        # Plot heatmap with model-specific colormap
+        im = ax.imshow(cm, cmap=cmap)
+
+        # Add text annotations
+        for i in range(2):
+            for j in range(2):
+                text_color = "white" if cm[i, j] > cm.max() / 2 else "black"
+                ax.text(j, i, f"{cm[i, j]}", ha="center", va="center", 
+                       color=text_color, fontsize=16, fontweight="bold")
+
+        ax.set_xticks([0, 1])
+        ax.set_yticks([0, 1])
+        ax.set_xticklabels(["Benign", "Melanoma"])
+        ax.set_yticklabels(["Benign", "Melanoma"])
+        ax.set_xlabel("Predicted", fontsize=12)
+        ax.set_ylabel("Actual", fontsize=12)
+        ax.set_title(f"{model_name}", fontsize=14)
+
+        # Add colorbar
+        plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
+    plt.tight_layout()
+
+    if save_path:
+        save_path = pathlib.Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, dpi=150, bbox_inches="tight")
+
+    return fig
+
+
+def plot_roc_curves(
+    comparison_df: pd.DataFrame,
+    save_path: Optional[pathlib.Path] = None,
+) -> plt.Figure:
+    """Plot ROC curves comparing Teacher and Student models.
+
+    Args:
+        comparison_df: DataFrame from build_comparison_dataframe
+        save_path: Optional path to save the figure
+
+    Returns:
+        matplotlib Figure.
+    """
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    # Compute ROC curves
+    teacher_fpr, teacher_tpr, _ = roc_curve(
+        comparison_df["true_label"], comparison_df["teacher_prob"]
+    )
+    student_fpr, student_tpr, _ = roc_curve(
+        comparison_df["true_label"], comparison_df["student_prob"]
+    )
+
+    # Compute AUCs
+    teacher_auc = roc_auc_score(
+        comparison_df["true_label"], comparison_df["teacher_prob"]
+    )
+    student_auc = roc_auc_score(
+        comparison_df["true_label"], comparison_df["student_prob"]
+    )
+
+    # Plot curves - consistent colors: Teacher=green, Student=purple
+    ax.plot(
+        teacher_fpr, teacher_tpr,
+        label=f"Teacher EfficientNet-B1 (AUC = {teacher_auc:.3f})",
+        color="#2ecc71", linewidth=2.5,
+    )
+    ax.plot(
+        student_fpr, student_tpr,
+        label=f"Student MobileNetV3 (AUC = {student_auc:.3f})",
+        color="#9b59b6", linewidth=2.5,
+    )
+
+    # Diagonal reference line
+    ax.plot([0, 1], [0, 1], "k--", alpha=0.5, label="Random Classifier (AUC = 0.500)")
+
+    ax.set_xlabel("False Positive Rate (1 - Specificity)", fontsize=12)
+    ax.set_ylabel("True Positive Rate (Sensitivity)", fontsize=12)
+    ax.set_title("ROC Curve Comparison: Teacher vs Student", fontsize=14)
+    ax.legend(loc="lower right", fontsize=10)
+    ax.set_xlim([0, 1])
+    ax.set_ylim([0, 1.02])
+    ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+
+    if save_path:
+        save_path = pathlib.Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, dpi=150, bbox_inches="tight")
+
+    return fig
+
+
+def plot_pr_curves(
+    comparison_df: pd.DataFrame,
+    precision_threshold: float = 0.95,
+    save_path: Optional[pathlib.Path] = None,
+) -> plt.Figure:
+    """Plot Precision-Recall curves comparing Teacher and Student models.
+
+    Args:
+        comparison_df: DataFrame from build_comparison_dataframe
+        precision_threshold: Precision level to mark on the curve (default 0.95)
+        save_path: Optional path to save the figure
+
+    Returns:
+        matplotlib Figure.
+    """
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    # Compute PR curves
+    teacher_precision, teacher_recall, teacher_thresholds = precision_recall_curve(
+        comparison_df["true_label"], comparison_df["teacher_prob"]
+    )
+    student_precision, student_recall, student_thresholds = precision_recall_curve(
+        comparison_df["true_label"], comparison_df["student_prob"]
+    )
+
+    # Compute Average Precision scores
+    teacher_ap = average_precision_score(
+        comparison_df["true_label"], comparison_df["teacher_prob"]
+    )
+    student_ap = average_precision_score(
+        comparison_df["true_label"], comparison_df["student_prob"]
+    )
+
+    # Plot curves - consistent colors: Teacher=green, Student=purple
+    ax.plot(
+        teacher_recall, teacher_precision,
+        label=f"Teacher EfficientNet-B1 (AP = {teacher_ap:.3f})",
+        color="#2ecc71", linewidth=2.5,
+    )
+    ax.plot(
+        student_recall, student_precision,
+        label=f"Student MobileNetV3 (AP = {student_ap:.3f})",
+        color="#9b59b6", linewidth=2.5,
+    )
+
+    # Find and mark the threshold for precision_threshold (e.g., 95%)
+    def find_threshold_at_precision(precision, recall, thresholds, target_precision):
+        """Find the threshold and recall at a target precision level."""
+        # Find indices where precision >= target
+        valid_idx = np.where(precision >= target_precision)[0]
+        if len(valid_idx) == 0:
+            return None, None, None
+        # Get the index with maximum recall among valid precision points
+        best_idx = valid_idx[np.argmax(recall[valid_idx])]
+        if best_idx < len(thresholds):
+            return precision[best_idx], recall[best_idx], thresholds[best_idx]
+        return precision[best_idx], recall[best_idx], None
+
+    teacher_p, teacher_r, teacher_t = find_threshold_at_precision(
+        teacher_precision, teacher_recall, teacher_thresholds, precision_threshold
+    )
+    student_p, student_r, student_t = find_threshold_at_precision(
+        student_precision, student_recall, student_thresholds, precision_threshold
+    )
+
+    # Mark the threshold points
+    if teacher_r is not None:
+        ax.scatter([teacher_r], [teacher_p], color="#2ecc71", s=100, zorder=5, 
+                   edgecolors="black", linewidths=1.5)
+        thresh_str = f"τ={teacher_t:.2f}" if teacher_t else ""
+        ax.annotate(
+            f"Teacher @ {precision_threshold:.0%}\nRecall={teacher_r:.2f} {thresh_str}",
+            (teacher_r, teacher_p), textcoords="offset points", 
+            xytext=(10, -20), fontsize=9, color="#2ecc71"
+        )
+
+    if student_r is not None:
+        ax.scatter([student_r], [student_p], color="#9b59b6", s=100, zorder=5,
+                   edgecolors="black", linewidths=1.5)
+        thresh_str = f"τ={student_t:.2f}" if student_t else ""
+        ax.annotate(
+            f"Student @ {precision_threshold:.0%}\nRecall={student_r:.2f} {thresh_str}",
+            (student_r, student_p), textcoords="offset points",
+            xytext=(10, 10), fontsize=9, color="#9b59b6"
+        )
+
+    # Baseline (prevalence)
+    prevalence = comparison_df["true_label"].mean()
+    ax.axhline(y=prevalence, color="gray", linestyle="--", alpha=0.5,
+               label=f"Baseline (prevalence = {prevalence:.2f})")
+
+    ax.set_xlabel("Recall (Sensitivity)", fontsize=12)
+    ax.set_ylabel("Precision (PPV)", fontsize=12)
+    ax.set_title(f"Precision-Recall Curves with {precision_threshold:.0%} Precision Threshold", fontsize=14)
+    ax.legend(loc="upper right", fontsize=10)
+    ax.set_xlim([0, 1.02])
+    ax.set_ylim([0, 1.02])
+    ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+
+    if save_path:
+        save_path = pathlib.Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, dpi=150, bbox_inches="tight")
+
+    return fig
