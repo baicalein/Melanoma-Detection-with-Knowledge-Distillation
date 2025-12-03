@@ -1,5 +1,21 @@
 """Evaluation metrics, inference, and quantization utilities."""
 
+from src.evaluation.comparison import (
+    ComparisonMetrics,
+    analyze_disagreements,
+    build_comparison_dataframe,
+    compute_metrics,
+    generate_comparison_summary,
+    get_batch_predictions,
+    plot_confusion_matrices,
+    plot_disagreement_analysis,
+    plot_pr_curves,
+    plot_probability_comparison,
+    plot_roc_curves,
+    plot_sample_images,
+    predict_single_image,
+    resolve_image_path,
+)
 from src.evaluation.inference import (
     analyze_predictions,
     get_all_predictions,
@@ -26,15 +42,33 @@ from src.evaluation.quantization import (
 )
 
 __all__ = [
+    # Comparison
+    "ComparisonMetrics",
+    "analyze_disagreements",
+    "build_comparison_dataframe",
+    "compute_metrics",
+    "generate_comparison_summary",
+    "get_batch_predictions",
+    "plot_confusion_matrices",
+    "plot_disagreement_analysis",
+    "plot_pr_curves",
+    "plot_probability_comparison",
+    "plot_roc_curves",
+    "plot_sample_images",
+    "predict_single_image",
+    "resolve_image_path",
+    # Metrics
     "ClassificationMetrics",
     "DeploymentMetrics",
     "compute_classification_metrics",
     "evaluate_model",
     "compute_calibration_error",
     "compute_deployment_metrics",
+    # Quantization
     "quantize_model_dynamic",
     "quantize_model_static",
     "compare_quantized_model",
+    # Inference
     "load_model_from_checkpoint",
     "get_prediction",
     "get_all_predictions",
