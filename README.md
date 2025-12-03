@@ -7,6 +7,8 @@
 
 This project implements knowledge distillation for melanoma detection on the HAM10000 dataset, targeting deployment on mobile phones and edge devices.
 
+[project presentation](https://gemini.google.com/share/9df265ef7437)
+
 ## Table of Contents
 
 - [Melanoma Detection with Knowledge Distillation](#melanoma-detection-with-knowledge-distillation)
