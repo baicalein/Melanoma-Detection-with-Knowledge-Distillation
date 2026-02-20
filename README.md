@@ -9,6 +9,13 @@ This project implements knowledge distillation for melanoma detection on the HAM
 
 [project presentation](https://gemini.google.com/share/9df265ef7437)
 
+## Project Contributions
+This project was completed as part of UVA DS 6050 (Deep Learning).
+
+- Conceptual design and problem framing: Angie Yoon  
+- Knowledge distillation strategy and experimental schema search: Angie Yoon  
+- Model implementation and training infrastructure: rah-ds  
+- Evaluation, ablation studies, and analysis: rah-ds
 ## Table of Contents
 
 - [Melanoma Detection with Knowledge Distillation](#melanoma-detection-with-knowledge-distillation)
